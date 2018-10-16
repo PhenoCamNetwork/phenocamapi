@@ -1,0 +1,19 @@
+language: r
+distro: trusty
+sudo: required
+warnings_are_errors: false
+
+addon:
+  packages:
+
+
+# Code coverage
+r_packages:
+  - covr
+
+
+r_binary_packages:
+  - rgdal
+
+after_success:
+- Rscript -e 'library(covr); codecov()'
