@@ -1,0 +1,38 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1304457.svg)](https://doi.org/10.5281/zenodo.1304457) [![Travis CI](https://travis-ci.org/bnasr/phenocam?branch=master)](https://travis-ci.org/bnasr/phenocam) [![Coverage status](https://codecov.io/gh/bnasr/phenocam/branch/master/graph/badge.svg)](https://codecov.io/github/bnasr/phenocam?branch=master)
+
+# Extracting PhenoCam data using phenocam R Package 
+
+
+```{r setup, include = FALSE, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+PhenoCam time-series are extracted time-series data obtained from ROI's for a given site. 
+Each site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI's per vegetation type. 
+
+This R package is an effort to simplify data wrangling steps and finally merge them as a single dataframe.
+
+# Installation
+`phenocam` can be directly installed from the [GitHub repo](https://github.com/bnasr/phenocam):
+```{r}
+# installing the package from the GitHub repo
+if(!require(devtools)) install.packages('devtools')
+devtools::install_github('bnasr/phenocam')
+
+# loading the package
+library(phenocam)
+```
+
+
+# Usage
+The vignette page contains useful information on how to use the R package.
+```{r}
+browseVignettes('phenocam')
+```
+
+Detailed guides on how to use each function has been provided in the manual page of each function.
+
+

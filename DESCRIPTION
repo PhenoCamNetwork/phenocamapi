@@ -1,0 +1,19 @@
+Package: phenocam
+Type: Package
+Title: Interacting with the PhenoCam data
+Version: 0.1.0
+Author: Bijan Seyednasrollah  
+Maintainer: Bijan Seyednasrollah <bijan.s.nasr@gmail.com>
+Description: A bundle to facilitate working with PhenoCam timeseries and data.   The user would be able to obtain phenological time-series from the PhenoCam network.
+License: AGPL-3
+Encoding: UTF-8
+LazyData: true
+Depends:
+  data.table,
+  utils,
+  rjson
+Suggests: testthat,
+    knitr,
+    rmarkdown
+RoxygenNote: 6.0.1.9000
+VignetteBuilder: knitr
