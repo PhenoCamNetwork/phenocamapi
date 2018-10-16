@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1304457.svg)](https://doi.org/10.5281/zenodo.1304457) [![Coverage status](https://codecov.io/gh/bnasr/phenocam/branch/master/graph/badge.svg)](https://codecov.io/github/bnasr/phenocam?branch=master) 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1304457.svg)](https://doi.org/10.5281/zenodo.1304457) [![Coverage status](https://codecov.io/gh/bnasr/phenocam/branch/master/graph/badge.svg)](https://codecov.io/github/bnasr/phenocam?branch=master) [![Travis CI](https://travis-ci.org/bnasr/phenocam.svg?branch=master)](https://travis-ci.org/bnasr/phenocam) 
 
 # Extracting PhenoCam data using phenocam R Package 
 
