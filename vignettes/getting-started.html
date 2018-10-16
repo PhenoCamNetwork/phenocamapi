@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Bijan Seyednasrollah" />
+
+<meta name="date" content="2018-10-16" />
+
+<title>PhenoCam Data Fusion</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">PhenoCam Data Fusion</h1>
+<h4 class="author"><em>Bijan Seyednasrollah</em></h4>
+<h4 class="date"><em>2018-10-16</em></h4>
+
+
+
+<p>PhenoCam time-series are extracted time-series data obtained from ROI’s for a given site. Each site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI’s per vegetation type.</p>
+<p>This R package is an effort to simplify data wrangling steps and finally merge them as a single dataframe.</p>
+<p>I begin with several examples for extracting Phenocam time-series directly from the server: - Exploring the PhenoCam metadata - Downloading Phenocam time-series data - Merging with other time-series</p>
+<div id="exploriong-the-phenocam-metadata" class="section level2">
+<h2>Exploriong the PhenoCam metadata</h2>
+<p>We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the <code>getphenos()</code> function. The returning value would be a data.table in order to simplify further data exploration.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
+<span class="kw">library</span>(phenocam)
+
+<span class="co"># obtaining the metadata as data.table</span>
+phenos &lt;-<span class="st"> </span><span class="kw">getphenos</span>()
+
+<span class="kw">head</span>(phenos)
+<span class="co">#&gt;              site      lat        lon elev active utc_offset date_first</span>
+<span class="co">#&gt; 1:         acadia 44.37694  -68.26083  158   TRUE         -5 2007-03-15</span>
+<span class="co">#&gt; 2:  aguatibiaeast 33.62200 -116.86700 1086   TRUE         -8 2007-08-16</span>
+<span class="co">#&gt; 3: aguatibianorth 33.60222 -117.34368 1090  FALSE         -8 2003-10-01</span>
+<span class="co">#&gt; 4:       ahwahnee 37.74670 -119.58160 1199   TRUE         -8 2008-08-28</span>
+<span class="co">#&gt; 5:      alleypond 40.74284  -73.74304   61  FALSE         -5 2014-11-05</span>
+<span class="co">#&gt; 6: alligatorriver 35.78790  -75.90380    1   TRUE         -5 2012-05-03</span>
+<span class="co">#&gt;     date_last                                             site_description</span>
+<span class="co">#&gt; 1: 2018-10-15 Acadia National Park, McFarland Hill, near Bar Harbor, Maine</span>
+<span class="co">#&gt; 2: 2018-10-15                            Agua Tibia Wilderness, California</span>
+<span class="co">#&gt; 3: 2006-10-25                            Agua Tibia Wilderness, California</span>
+<span class="co">#&gt; 4: 2018-10-15          Ahwahnee Meadow, Yosemite National Park, California</span>
+<span class="co">#&gt; 5: 2015-10-13                                 Alley Pond, Queens, New York</span>
+<span class="co">#&gt; 6: 2018-10-10     Alligator River National Wildlife Refuge, North Carolina</span>
+<span class="co">#&gt;    camera_description camera_orientation flux_data flux_networks</span>
+<span class="co">#&gt; 1:            unknown                 NE     FALSE        &lt;list&gt;</span>
+<span class="co">#&gt; 2:            unknown                 SW     FALSE        &lt;list&gt;</span>
+<span class="co">#&gt; 3:            unknown                 NE     FALSE        &lt;list&gt;</span>
+<span class="co">#&gt; 4:            unknown                  E     FALSE        &lt;list&gt;</span>
+<span class="co">#&gt; 5:  StarDot NetCam SC                  S     FALSE        &lt;list&gt;</span>
+<span class="co">#&gt; 6:  StarDot NetCam SC                  N      TRUE        &lt;list&gt;</span>
+<span class="co">#&gt;    flux_sitenames</span>
+<span class="co">#&gt; 1:               </span>
+<span class="co">#&gt; 2:               </span>
+<span class="co">#&gt; 3:               </span>
+<span class="co">#&gt; 4:               </span>
+<span class="co">#&gt; 5:               </span>
+<span class="co">#&gt; 6:         US-NC4</span>
+<span class="co">#&gt;                                                    dominant_species</span>
+<span class="co">#&gt; 1:                                                                 </span>
+<span class="co">#&gt; 2:                                                                 </span>
+<span class="co">#&gt; 3:                                                                 </span>
+<span class="co">#&gt; 4:                                                                 </span>
+<span class="co">#&gt; 5:                                                                 </span>
+<span class="co">#&gt; 6: Nyssa sylvatica, Taxodium distichum, Nyssa aquatica, Acer rubrum</span>
+<span class="co">#&gt;    primary_veg_type secondary_veg_type site_meteorology MAT_site MAP_site</span>
+<span class="co">#&gt; 1:               DB                 EN            FALSE       NA       NA</span>
+<span class="co">#&gt; 2:               SH                               FALSE       NA       NA</span>
+<span class="co">#&gt; 3:               SH                               FALSE       NA       NA</span>
+<span class="co">#&gt; 4:               EN                 GR            FALSE       NA       NA</span>
+<span class="co">#&gt; 5:               DB                               FALSE       NA       NA</span>
+<span class="co">#&gt; 6:               DB                 WL             TRUE     16.6     1310</span>
+<span class="co">#&gt;    MAT_daymet MAP_daymet MAT_worldclim MAP_worldclim koeppen_geiger</span>
+<span class="co">#&gt; 1:       7.05       1439           6.5          1303            Dfb</span>
+<span class="co">#&gt; 2:      15.75        483          14.9           504            Csa</span>
+<span class="co">#&gt; 3:      16.00        489          13.8           729            Csa</span>
+<span class="co">#&gt; 4:      12.25        871          11.8           886            Csb</span>
+<span class="co">#&gt; 5:      11.90       1263          11.7          1109            Cfa</span>
+<span class="co">#&gt; 6:      16.75       1371          16.4          1312            Cfa</span>
+<span class="co">#&gt;    ecoregion landcover_igbp flux_networks_name        flux_networks_url</span>
+<span class="co">#&gt; 1:         8              5               &lt;NA&gt;                     &lt;NA&gt;</span>
+<span class="co">#&gt; 2:        11              7               &lt;NA&gt;                     &lt;NA&gt;</span>
+<span class="co">#&gt; 3:        11              7               &lt;NA&gt;                     &lt;NA&gt;</span>
+<span class="co">#&gt; 4:         6              8               &lt;NA&gt;                     &lt;NA&gt;</span>
+<span class="co">#&gt; 5:         8             13               &lt;NA&gt;                     &lt;NA&gt;</span>
+<span class="co">#&gt; 6:         8              5          AMERIFLUX http://ameriflux.lbl.gov</span>
+<span class="co">#&gt;    flux_networks_description</span>
+<span class="co">#&gt; 1:                      &lt;NA&gt;</span>
+<span class="co">#&gt; 2:                      &lt;NA&gt;</span>
+<span class="co">#&gt; 3:                      &lt;NA&gt;</span>
+<span class="co">#&gt; 4:                      &lt;NA&gt;</span>
+<span class="co">#&gt; 5:                      &lt;NA&gt;</span>
+<span class="co">#&gt; 6:         AmeriFlux Network</span></code></pre></div>
+<p>or we can just list the sites with flux data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phenofluxsites &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span><span class="ot">TRUE</span><span class="op">&amp;!</span><span class="kw">is.na</span>(flux_sitenames), .(<span class="dt">PhenoCam=</span>site, <span class="dt">Flux=</span>flux_sitenames)]
+<span class="kw">head</span>(phenofluxsites)
+<span class="co">#&gt;                PhenoCam   Flux</span>
+<span class="co">#&gt; 1:       alligatorriver US-NC4</span>
+<span class="co">#&gt; 2:        arscolesnorth   LTAR</span>
+<span class="co">#&gt; 3:        arscolessouth   LTAR</span>
+<span class="co">#&gt; 4: arsgreatbasinltar098 US-Rws</span>
+<span class="co">#&gt; 5:          arsope3ltar       </span>
+<span class="co">#&gt; 6:           austincary US-SP1</span>
+
+<span class="co">#list deciduous broadleaf sites with flux tower</span>
+DB.flux &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span><span class="ot">TRUE</span><span class="op">&amp;</span>primary_veg_type<span class="op">==</span><span class="st">'DB'</span>, site]
+<span class="kw">head</span>(DB.flux)
+<span class="co">#&gt; [1] &quot;alligatorriver&quot; &quot;bartlett&quot;       &quot;bartlettir&quot;     &quot;bbc3&quot;          </span>
+<span class="co">#&gt; [5] &quot;bbc4&quot;           &quot;bbc7&quot;</span></code></pre></div>
+</div>
+<div id="downloading-phenocam-timeseries-data" class="section level2">
+<h2>Downloading Phenocam timeseries data</h2>
+<p>To download the phenological time-series from the PhenoCam, we need to know the sitename, vegetation type and ROI ID. This information can be obtained from the <a href="https://phenocam.sr.unh.edu/webcam/">PhenoCam website</a> or using the <code>getrois()</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># obtaining the list of all the available ROI's on the PhenoCam server</span>
+rois &lt;-<span class="st"> </span><span class="kw">getrois</span>()
+
+<span class="kw">head</span>(rois)
+<span class="co">#&gt;                    roi_name             site      lat       lon roitype</span>
+<span class="co">#&gt; 1:   alligatorriver_DB_1000   alligatorriver 35.78790 -75.90380      DB</span>
+<span class="co">#&gt; 2:      arbutuslake_DB_1000      arbutuslake 43.98207 -74.23322      DB</span>
+<span class="co">#&gt; 3: arbutuslakeinlet_DB_1000 arbutuslakeinlet 43.99336 -74.24527      DB</span>
+<span class="co">#&gt; 4:     archboldavir_AG_1000     archboldavir 27.17606 -81.21958      AG</span>
+<span class="co">#&gt; 5:    archboldavirx_AG_1000    archboldavirx 27.16663 -81.21983      AG</span>
+<span class="co">#&gt; 6:    archboldbahia_AG_1000    archboldbahia 27.16560 -81.21611      AG</span>
+<span class="co">#&gt;    sequence_number                                      description</span>
+<span class="co">#&gt; 1:            1000                                  canopy level DB</span>
+<span class="co">#&gt; 2:            1000                                  canopy level DB</span>
+<span class="co">#&gt; 3:            1000 canopy level DB (only a small part of FOV is DB)</span>
+<span class="co">#&gt; 4:            1000                                 entire AG in FOV</span>
+<span class="co">#&gt; 5:            1000                            entire AG land in FOV</span>
+<span class="co">#&gt; 6:            1000                               entire land in FOV</span>
+<span class="co">#&gt;    first_date  last_date site_years missing_data_pct</span>
+<span class="co">#&gt; 1: 2012-05-04 2018-10-11        6.1              5.0</span>
+<span class="co">#&gt; 2: 2008-06-12 2014-08-24        5.4             13.0</span>
+<span class="co">#&gt; 3: 2015-08-18 2018-10-14        2.4             25.0</span>
+<span class="co">#&gt; 4: 2016-11-18 2018-10-14        1.7             12.0</span>
+<span class="co">#&gt; 5: 2016-05-16 2018-10-14        2.2              9.0</span>
+<span class="co">#&gt; 6: 2017-03-21 2018-10-14        1.5              3.0</span>
+<span class="co">#&gt;                                                                                       roi_page</span>
+<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000.html</span>
+<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000.html</span>
+<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000.html</span>
+<span class="co">#&gt; 4:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000.html</span>
+<span class="co">#&gt; 5:       https://phenocam.sr.unh.edu/data/archive/archboldavirx/ROI/archboldavirx_AG_1000.html</span>
+<span class="co">#&gt; 6:       https://phenocam.sr.unh.edu/data/archive/archboldbahia/ROI/archboldbahia_AG_1000.html</span>
+<span class="co">#&gt;                                                                                         roi_stats_file</span>
+<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_roistats.csv</span>
+<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_roistats.csv</span>
+<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_roistats.csv</span>
+<span class="co">#&gt; 4:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_roistats.csv</span>
+<span class="co">#&gt; 5:       https://phenocam.sr.unh.edu/data/archive/archboldavirx/ROI/archboldavirx_AG_1000_roistats.csv</span>
+<span class="co">#&gt; 6:       https://phenocam.sr.unh.edu/data/archive/archboldbahia/ROI/archboldbahia_AG_1000_roistats.csv</span>
+<span class="co">#&gt;                                                                                    one_day_summary</span>
+<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_1day.csv</span>
+<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_1day.csv</span>
+<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_1day.csv</span>
+<span class="co">#&gt; 4:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_1day.csv</span>
+<span class="co">#&gt; 5:       https://phenocam.sr.unh.edu/data/archive/archboldavirx/ROI/archboldavirx_AG_1000_1day.csv</span>
+<span class="co">#&gt; 6:       https://phenocam.sr.unh.edu/data/archive/archboldbahia/ROI/archboldbahia_AG_1000_1day.csv</span>
+<span class="co">#&gt;                                                                                  three_day_summary</span>
+<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_3day.csv</span>
+<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_3day.csv</span>
+<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_3day.csv</span>
+<span class="co">#&gt; 4:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_3day.csv</span>
+<span class="co">#&gt; 5:       https://phenocam.sr.unh.edu/data/archive/archboldavirx/ROI/archboldavirx_AG_1000_3day.csv</span>
+<span class="co">#&gt; 6:       https://phenocam.sr.unh.edu/data/archive/archboldbahia/ROI/archboldbahia_AG_1000_3day.csv</span>
+<span class="co">#&gt;    data_release</span>
+<span class="co">#&gt; 1:          pre</span>
+<span class="co">#&gt; 2:          pre</span>
+<span class="co">#&gt; 3:          pre</span>
+<span class="co">#&gt; 4:          pre</span>
+<span class="co">#&gt; 5:          pre</span>
+<span class="co">#&gt; 6:          pre</span></code></pre></div>
+<p>The <code>getphenoTS()</code> function can download a time-series and return the result as a <code>data.table</code>. For example, to obtain the time-series for <a href="https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html">DB_1000</a> from the <strong><em>dukehw</em></strong> PhenoCam site:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># to obtain the DB 1000  from dukehw</span>
+dukehw_DB_<span class="dv">1000</span> &lt;-<span class="st"> </span><span class="kw">getphenoTS</span>(<span class="dt">site =</span> <span class="st">'dukehw'</span>, <span class="dt">vegType =</span> <span class="st">'DB'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>, <span class="dt">type =</span> <span class="st">'3day'</span>)
+
+<span class="kw">head</span>(dukehw_DB_<span class="dv">1000</span>)
+<span class="co">#&gt;          date year doy image_count              midday_filename midday_r</span>
+<span class="co">#&gt; 1: 2013-06-01 2013 152          57 dukehw_2013_06_01_120111.jpg 91.27133</span>
+<span class="co">#&gt; 2: 2013-06-04 2013 155          76 dukehw_2013_06_04_120119.jpg 76.39418</span>
+<span class="co">#&gt; 3: 2013-06-07 2013 158          77 dukehw_2013_06_07_120112.jpg 60.59138</span>
+<span class="co">#&gt; 4: 2013-06-10 2013 161          77 dukehw_2013_06_10_120108.jpg 76.47824</span>
+<span class="co">#&gt; 5: 2013-06-13 2013 164          77 dukehw_2013_06_13_120112.jpg 88.94067</span>
+<span class="co">#&gt; 6: 2013-06-16 2013 167          78 dukehw_2013_06_16_120110.jpg 88.74154</span>
+<span class="co">#&gt;    midday_g midday_b midday_gcc midday_rcc   r_mean   r_std   g_mean</span>
+<span class="co">#&gt; 1: 97.91501 47.39231    0.41388    0.38580 87.64029 5.90415 92.13308</span>
+<span class="co">#&gt; 2: 84.97283 33.55237    0.43594    0.39193 79.86220 6.00115 86.92451</span>
+<span class="co">#&gt; 3: 73.15058 35.59088    0.43199    0.35782 72.73630 9.49633 83.97068</span>
+<span class="co">#&gt; 4: 82.20226 37.08507    0.41990    0.39066 80.88500 8.23146 87.96595</span>
+<span class="co">#&gt; 5: 95.72012 51.37524    0.40553    0.37681 83.75471 5.89276 89.72717</span>
+<span class="co">#&gt; 6: 95.07550 48.90862    0.40853    0.38131 84.05656 5.87811 89.00122</span>
+<span class="co">#&gt;      g_std   b_mean   b_std gcc_mean gcc_std  gcc_50  gcc_75  gcc_90</span>
+<span class="co">#&gt; 1: 6.34444 46.09969 4.47645  0.40792 0.00859 0.40781 0.41395 0.41683</span>
+<span class="co">#&gt; 2: 5.26335 37.98788 3.41685  0.42465 0.00890 0.42739 0.43087 0.43443</span>
+<span class="co">#&gt; 3: 7.71469 39.55555 5.28922  0.42865 0.01318 0.43110 0.43513 0.43984</span>
+<span class="co">#&gt; 4: 7.77292 43.06439 4.72808  0.41530 0.01243 0.41633 0.42366 0.42811</span>
+<span class="co">#&gt; 5: 6.47203 46.72175 4.01465  0.40744 0.01072 0.40740 0.41517 0.42083</span>
+<span class="co">#&gt; 6: 5.17788 44.64391 4.28153  0.40900 0.00895 0.40990 0.41598 0.41989</span>
+<span class="co">#&gt;    rcc_mean rcc_std  rcc_50  rcc_75  rcc_90 max_solar_elev snow_flag</span>
+<span class="co">#&gt; 1:  0.38819 0.01176 0.38689 0.39121 0.39690       75.99634        NA</span>
+<span class="co">#&gt; 2:  0.38981 0.01032 0.39138 0.39622 0.39948       76.31210        NA</span>
+<span class="co">#&gt; 3:  0.36977 0.01326 0.37280 0.37796 0.38168       76.56521        NA</span>
+<span class="co">#&gt; 4:  0.38138 0.00881 0.38283 0.38841 0.39132       76.75881        NA</span>
+<span class="co">#&gt; 5:  0.38040 0.00995 0.38163 0.38531 0.38861       76.94218        NA</span>
+<span class="co">#&gt; 6:  0.38609 0.01249 0.38678 0.39303 0.39833       77.07864        NA</span>
+<span class="co">#&gt;    outlierflag_gcc_mean outlierflag_gcc_50 outlierflag_gcc_75</span>
+<span class="co">#&gt; 1:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 2:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 3:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 4:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 5:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 6:                   NA                 NA                 NA</span>
+<span class="co">#&gt;    outlierflag_gcc_90 YEAR DOY   YYYYMMDD</span>
+<span class="co">#&gt; 1:                 NA 2013 152 2013-06-01</span>
+<span class="co">#&gt; 2:                 NA 2013 155 2013-06-04</span>
+<span class="co">#&gt; 3:                 NA 2013 158 2013-06-07</span>
+<span class="co">#&gt; 4:                 NA 2013 161 2013-06-10</span>
+<span class="co">#&gt; 5:                 NA 2013 164 2013-06-13</span>
+<span class="co">#&gt; 6:                 NA 2013 167 2013-06-16</span>
+
+dukehw_DB_<span class="dv">1000</span>[,date<span class="op">:</span><span class="er">=</span><span class="kw">as.Date</span>(date)]
+dukehw_DB_<span class="dv">1000</span>[,<span class="kw">plot</span>(date, gcc_<span class="dv">90</span>)]</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>#&gt; NULL</code></pre>
+</div>
+<div id="merge-with-other-time-series-such-as-flux-data" class="section level2">
+<h2>Merge with other time-series such as flux data</h2>
+<p>In a fully programmatic settings you can load the PhenoCam dataset, find the related flux data, load the flux data and merge everything together as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phenots &lt;-<span class="st"> </span><span class="kw">getphenoTS</span>(<span class="dt">site =</span> <span class="st">'oregonMP'</span>, <span class="dt">vegType =</span> <span class="st">'EN'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>)
+
+<span class="kw">head</span>(phenots)
+<span class="co">#&gt;          date year doy image_count                midday_filename midday_r</span>
+<span class="co">#&gt; 1: 2011-06-16 2011 167          63 oregonMP_2011_06_16_120118.jpg 103.9530</span>
+<span class="co">#&gt; 2: 2011-06-19 2011 170          74 oregonMP_2011_06_19_120113.jpg 103.5935</span>
+<span class="co">#&gt; 3: 2011-06-22 2011 173          76 oregonMP_2011_06_22_120114.jpg 104.1644</span>
+<span class="co">#&gt; 4: 2011-06-25 2011 176          77 oregonMP_2011_06_25_120116.jpg 104.5720</span>
+<span class="co">#&gt; 5: 2011-06-28 2011 179          73 oregonMP_2011_06_28_120111.jpg 128.1094</span>
+<span class="co">#&gt; 6: 2011-07-01 2011 182          73 oregonMP_2011_07_01_120114.jpg 102.2098</span>
+<span class="co">#&gt;     midday_g midday_b midday_gcc midday_rcc   r_mean    r_std   g_mean</span>
+<span class="co">#&gt; 1:  86.63893 52.20004    0.35684    0.42816 124.5583 19.60591 106.0913</span>
+<span class="co">#&gt; 2:  87.31880 53.11946    0.35782    0.42451 121.7044 15.20969 105.0276</span>
+<span class="co">#&gt; 3:  88.58788 51.58992    0.36256    0.42631 124.2838 16.98360 107.4202</span>
+<span class="co">#&gt; 4:  89.02901 52.47840    0.36179    0.42495 123.8756 16.35445 106.4903</span>
+<span class="co">#&gt; 5: 111.36828 68.91034    0.36113    0.41542 123.9016 13.17907 108.4226</span>
+<span class="co">#&gt; 6:  87.51073 51.46247    0.36284    0.42379 122.7949 17.65924 107.1554</span>
+<span class="co">#&gt;       g_std   b_mean    b_std gcc_mean gcc_std  gcc_50  gcc_75  gcc_90</span>
+<span class="co">#&gt; 1: 17.10334 72.54730 21.06870  0.35150 0.01061 0.35518 0.35749 0.35856</span>
+<span class="co">#&gt; 2: 14.22768 69.54728 16.26605  0.35525 0.00751 0.35692 0.35897 0.36004</span>
+<span class="co">#&gt; 3: 15.28831 70.44228 17.72491  0.35667 0.00960 0.36016 0.36165 0.36366</span>
+<span class="co">#&gt; 4: 14.35366 69.47986 17.63958  0.35638 0.01000 0.35941 0.36205 0.36273</span>
+<span class="co">#&gt; 5: 11.41950 69.56180 12.25025  0.35953 0.00608 0.36113 0.36349 0.36608</span>
+<span class="co">#&gt; 6: 15.15896 72.02875 20.35776  0.35659 0.01186 0.36086 0.36318 0.36466</span>
+<span class="co">#&gt;    rcc_mean rcc_std  rcc_50  rcc_75  rcc_90 max_solar_elev snow_flag</span>
+<span class="co">#&gt; 1:  0.41312 0.01463 0.41542 0.42378 0.43106       68.90398        NA</span>
+<span class="co">#&gt; 2:  0.41243 0.01564 0.41474 0.42440 0.43047       68.94462        NA</span>
+<span class="co">#&gt; 3:  0.41310 0.01378 0.41453 0.42496 0.42959       68.94485        NA</span>
+<span class="co">#&gt; 4:  0.41487 0.01410 0.41772 0.42503 0.42939       68.90269        NA</span>
+<span class="co">#&gt; 5:  0.41112 0.01810 0.41478 0.42492 0.43189       68.79744        NA</span>
+<span class="co">#&gt; 6:  0.40874 0.01545 0.41236 0.42225 0.42748       68.63139        NA</span>
+<span class="co">#&gt;    outlierflag_gcc_mean outlierflag_gcc_50 outlierflag_gcc_75</span>
+<span class="co">#&gt; 1:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 2:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 3:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 4:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 5:                   NA                 NA                 NA</span>
+<span class="co">#&gt; 6:                   NA                 NA                 NA</span>
+<span class="co">#&gt;    outlierflag_gcc_90 YEAR DOY   YYYYMMDD</span>
+<span class="co">#&gt; 1:                 NA 2011 167 2011-06-16</span>
+<span class="co">#&gt; 2:                 NA 2011 170 2011-06-19</span>
+<span class="co">#&gt; 3:                 NA 2011 173 2011-06-22</span>
+<span class="co">#&gt; 4:                 NA 2011 176 2011-06-25</span>
+<span class="co">#&gt; 5:                 NA 2011 179 2011-06-28</span>
+<span class="co">#&gt; 6:                 NA 2011 182 2011-07-01</span>
+
+fluxfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">'fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv'</span>, <span class="dt">package =</span> <span class="st">'phenocam'</span>)
+
+fluxts &lt;-<span class="st"> </span><span class="kw">read.csv</span>(fluxfile, <span class="dt">skip =</span> <span class="dv">0</span>)
+fluxts[fluxts<span class="op">==-</span><span class="dv">9999</span>] &lt;-<span class="st"> </span><span class="ot">NA</span>
+fluxts &lt;-<span class="st"> </span><span class="kw">as.data.table</span>(fluxts)
+fluxts[,datetime<span class="op">:</span><span class="er">=</span><span class="kw">as.POSIXct</span>(<span class="kw">as.character</span>(TIMESTAMP), <span class="dt">format=</span><span class="st">'%Y%m%d'</span>)]
+fluxts[,YYYYMMDD<span class="op">:</span><span class="er">=</span><span class="kw">as.character</span>(<span class="kw">as.Date</span>(datetime))]
+fluxts[,YEAR<span class="op">:</span><span class="er">=</span><span class="kw">year</span>(datetime)]
+fluxts[,DOY<span class="op">:</span><span class="er">=</span><span class="kw">yday</span>(datetime)]
+
+<span class="kw">head</span>(fluxts)
+<span class="co">#&gt;    TIMESTAMP TA_F_MDS TA_F_MDS_QC TA_F_MDS_NIGHT TA_F_MDS_NIGHT_SD</span>
+<span class="co">#&gt; 1:  20141115  -10.105           1        -10.702             0.852</span>
+<span class="co">#&gt; 2:  20141116   -8.044           1         -9.023             2.418</span>
+<span class="co">#&gt; 3:  20141117   -4.550           1         -5.133             1.583</span>
+<span class="co">#&gt; 4:  20141118   -1.584           1         -2.039             2.475</span>
+<span class="co">#&gt; 5:  20141119   -1.805           1         -2.301             1.364</span>
+<span class="co">#&gt; 6:  20141120    4.019           1          3.725             0.281</span>
+<span class="co">#&gt;    TA_F_MDS_NIGHT_QC TA_F_MDS_DAY TA_F_MDS_DAY_SD TA_F_MDS_DAY_QC TA_ERA</span>
+<span class="co">#&gt; 1:                 1       -9.269           1.216               1 -7.556</span>
+<span class="co">#&gt; 2:                 1       -6.673           2.568               1 -5.408</span>
+<span class="co">#&gt; 3:                 1       -3.734           2.005               1 -3.863</span>
+<span class="co">#&gt; 4:                 1       -0.947           2.372               1 -1.481</span>
+<span class="co">#&gt; 5:                 1       -1.112           1.264               1  1.351</span>
+<span class="co">#&gt; 6:                 1        4.467           0.581               1  1.731</span>
+<span class="co">#&gt;    TA_ERA_NIGHT TA_ERA_NIGHT_SD TA_ERA_DAY TA_ERA_DAY_SD    TA_F TA_F_QC</span>
+<span class="co">#&gt; 1:       -9.194           1.276     -5.262         2.661 -10.105       1</span>
+<span class="co">#&gt; 2:       -8.143           3.016     -1.579         4.854  -8.044       1</span>
+<span class="co">#&gt; 3:       -6.431           2.331     -0.269         4.756  -4.550       1</span>
+<span class="co">#&gt; 4:       -3.851           2.099      1.836         3.477  -1.584       1</span>
+<span class="co">#&gt; 5:        0.164           3.193      3.012         3.160  -1.805       1</span>
+<span class="co">#&gt; 6:        0.898           2.003      3.003         1.345   4.019       1</span>
+<span class="co">#&gt;    TA_F_NIGHT TA_F_NIGHT_SD TA_F_NIGHT_QC TA_F_DAY TA_F_DAY_SD TA_F_DAY_QC</span>
+<span class="co">#&gt; 1:    -10.702         0.852             1   -9.269       1.216           1</span>
+<span class="co">#&gt; 2:     -9.023         2.418             1   -6.673       2.568           1</span>
+<span class="co">#&gt; 3:     -5.133         1.583             1   -3.734       2.005           1</span>
+<span class="co">#&gt; 4:     -2.039         2.475             1   -0.947       2.372           1</span>
+<span class="co">#&gt; 5:     -2.301         1.364             1   -1.112       1.264           1</span>
+<span class="co">#&gt; 6:      3.725         0.281             1    4.467       0.581           1</span>
+<span class="co">#&gt;    SW_IN_POT SW_IN_F_MDS SW_IN_F_MDS_QC SW_IN_ERA SW_IN_F SW_IN_F_QC</span>
+<span class="co">#&gt; 1:   164.957     133.823              1   116.604 133.823          1</span>
+<span class="co">#&gt; 2:   162.951     121.261              1   116.763 121.261          1</span>
+<span class="co">#&gt; 3:   160.992     118.182              1   112.942 118.182          1</span>
+<span class="co">#&gt; 4:   159.080      84.340              1    79.556  84.340          1</span>
+<span class="co">#&gt; 5:   157.215      59.173              1    73.165  59.173          1</span>
+<span class="co">#&gt; 6:   155.399      49.226              1    48.501  49.226          1</span>
+<span class="co">#&gt;    LW_IN_F_MDS LW_IN_F_MDS_QC LW_IN_ERA LW_IN_F LW_IN_F_QC LW_IN_JSB</span>
+<span class="co">#&gt; 1:     267.676              1   197.590 267.676          1   181.582</span>
+<span class="co">#&gt; 2:     198.379              1   203.496 198.379          1   189.778</span>
+<span class="co">#&gt; 3:     195.119              1   215.056 195.119          1   200.419</span>
+<span class="co">#&gt; 4:     238.347              1   241.225 238.347          1   244.969</span>
+<span class="co">#&gt; 5:     277.903              1   274.923 277.903          1   250.067</span>
+<span class="co">#&gt; 6:     311.250              1   280.508 311.250          1   295.877</span>
+<span class="co">#&gt;    LW_IN_JSB_QC LW_IN_JSB_ERA LW_IN_JSB_F LW_IN_JSB_F_QC VPD_F_MDS</span>
+<span class="co">#&gt; 1:            1       206.609     181.582              1     0.304</span>
+<span class="co">#&gt; 2:            1       212.557     189.778              1     0.612</span>
+<span class="co">#&gt; 3:            1       224.199     200.419              1     1.459</span>
+<span class="co">#&gt; 4:            1       250.554     244.969              1     2.114</span>
+<span class="co">#&gt; 5:            1       284.492     250.067              1     1.631</span>
+<span class="co">#&gt; 6:            1       290.117     295.877              1     1.524</span>
+<span class="co">#&gt;    VPD_F_MDS_QC VPD_ERA VPD_F VPD_F_QC PA_ERA   PA_F PA_F_QC P_ERA   P_F</span>
+<span class="co">#&gt; 1:            1   2.343 0.304        1 87.869 87.876       1 0.000 0.000</span>
+<span class="co">#&gt; 2:            1   3.107 0.612        1 88.088 88.189       1 0.000 0.254</span>
+<span class="co">#&gt; 3:            1   3.351 1.459        1 87.834 87.941       1 0.000 0.000</span>
+<span class="co">#&gt; 4:            1   3.470 2.114        1 87.364 87.426       1 0.000 0.254</span>
+<span class="co">#&gt; 5:            1   3.634 1.631        1 86.904 86.949       1 1.542 0.000</span>
+<span class="co">#&gt; 6:            1   1.891 1.524        1 86.970 86.866       1 0.447 7.620</span>
+<span class="co">#&gt;    P_F_QC WS_ERA  WS_F WS_F_QC     USTAR USTAR_QC    NETRAD NETRAD_QC</span>
+<span class="co">#&gt; 1:      1  2.937 1.828       1 0.2091667        1 121.19190         1</span>
+<span class="co">#&gt; 2:      1  3.075 1.559       1 0.1581458        1  34.25288         1</span>
+<span class="co">#&gt; 3:      1  2.930 1.307       1 0.1565208        1  16.49356         1</span>
+<span class="co">#&gt; 4:      1  2.879 1.553       1 0.2103542        1  13.06663         1</span>
+<span class="co">#&gt; 5:      1  3.411 1.474       1 0.1811042        1  25.61417         1</span>
+<span class="co">#&gt; 6:      1  2.569 1.922       1 0.2484167        1  29.47104         1</span>
+<span class="co">#&gt;      PPFD_IN PPFD_IN_QC  PPFD_DIF PPFD_DIF_QC SW_DIF SW_DIF_QC    SW_OUT</span>
+<span class="co">#&gt; 1:  15.51829  0.7291667  90.53904           1     NA         0 24.516771</span>
+<span class="co">#&gt; 2:  37.70595  0.7708333 112.52912           1     NA         0 19.844104</span>
+<span class="co">#&gt; 3: 249.06771  1.0000000  66.62015           1     NA         0 18.082271</span>
+<span class="co">#&gt; 4: 173.39083  1.0000000 121.93363           1     NA        NA 13.239292</span>
+<span class="co">#&gt; 5: 128.34833  1.0000000 115.62565           1     NA         0  9.180604</span>
+<span class="co">#&gt; 6: 106.95437  1.0000000 104.20204           1     NA         0  6.617687</span>
+<span class="co">#&gt;    SW_OUT_QC   LW_OUT LW_OUT_QC CO2_F_MDS CO2_F_MDS_QC TS_F_MDS_1</span>
+<span class="co">#&gt; 1:         1 255.7998         1   407.504            1      0.448</span>
+<span class="co">#&gt; 2:         1 266.1617         1   405.436            1      0.387</span>
+<span class="co">#&gt; 3:         1 278.6988         1   407.750            1      0.562</span>
+<span class="co">#&gt; 4:         1 296.3873         1   406.774            1      0.602</span>
+<span class="co">#&gt; 5:         1 302.2800         1   408.721            1      0.799</span>
+<span class="co">#&gt; 6:         1 324.3890         1   402.187            1      0.723</span>
+<span class="co">#&gt;    TS_F_MDS_1_QC SWC_F_MDS_1 SWC_F_MDS_1_QC  G_F_MDS G_F_MDS_QC LE_F_MDS</span>
+<span class="co">#&gt; 1:             1      17.337              1 -2.84460          1 18.80010</span>
+<span class="co">#&gt; 2:             1      17.429              1 -2.95252          1 18.15980</span>
+<span class="co">#&gt; 3:             1      17.423              1 -2.53346          1 13.60750</span>
+<span class="co">#&gt; 4:             1      17.500              1 -2.37935          1 11.93050</span>
+<span class="co">#&gt; 5:             1      17.500              1 -2.12860          1  7.80701</span>
+<span class="co">#&gt; 6:             1      17.531              1 -1.97823          1 12.13940</span>
+<span class="co">#&gt;    LE_F_MDS_QC  LE_CORR LE_CORR_25 LE_CORR_75 LE_RANDUNC LE_CORR_JOINTUNC</span>
+<span class="co">#&gt; 1:           1 17.51650   13.97030   23.64030    2.33029          7.53752</span>
+<span class="co">#&gt; 2:           1 16.91990   14.99010   22.83520    2.07760          6.17541</span>
+<span class="co">#&gt; 3:           1 12.67840   11.23240   17.11080    1.75427          4.69747</span>
+<span class="co">#&gt; 4:           1 11.11590    9.84814   15.00210    1.42041          4.07609</span>
+<span class="co">#&gt; 5:           1  7.27395    6.44434    9.81696    1.01290          2.69748</span>
+<span class="co">#&gt; 6:           1 11.31050         NA         NA    1.45290               NA</span>
+<span class="co">#&gt;       H_F_MDS H_F_MDS_QC     H_CORR H_CORR_25 H_CORR_75 H_RANDUNC</span>
+<span class="co">#&gt; 1:  29.140500          1  27.150900 21.654300 36.642900   4.45243</span>
+<span class="co">#&gt; 2:  24.688000          1  23.002300 20.378800 31.044000   3.84283</span>
+<span class="co">#&gt; 3:  26.752500          1  24.925800 22.083000 33.640000   3.63228</span>
+<span class="co">#&gt; 4:   0.352977          1   0.328876  0.291367  0.443853   2.65800</span>
+<span class="co">#&gt; 5:  11.794500          1  10.989200  9.735870 14.831100   2.32924</span>
+<span class="co">#&gt; 6: -14.875900          1 -13.860200        NA        NA   2.47572</span>
+<span class="co">#&gt;    H_CORR_JOINTUNC EBC_CF_N EBC_CF_METHOD NIGHT_D DAY_D NIGHT_RANDUNC_N</span>
+<span class="co">#&gt; 1:        11.96980        6             1      28    20              28</span>
+<span class="co">#&gt; 2:         8.79044        5             1      28    20              28</span>
+<span class="co">#&gt; 3:         9.30532        5             1      28    20              28</span>
+<span class="co">#&gt; 4:         2.66040        5             1      28    20              28</span>
+<span class="co">#&gt; 5:         4.43750        5             1      28    20              28</span>
+<span class="co">#&gt; 6:              NA        5             2      29    19              29</span>
+<span class="co">#&gt;    DAY_RANDUNC_N NEE_CUT_REF NEE_VUT_REF NEE_CUT_REF_QC NEE_VUT_REF_QC</span>
+<span class="co">#&gt; 1:            20    2.775190    2.020350       0.937500       0.854167</span>
+<span class="co">#&gt; 2:            20    2.037130    1.821470       0.895833       0.895833</span>
+<span class="co">#&gt; 3:            20    1.018920    1.059430       0.375000       0.375000</span>
+<span class="co">#&gt; 4:            19    0.923076    0.742306       0.166667       0.187500</span>
+<span class="co">#&gt; 5:            19    0.117345   -0.320452       0.000000       0.000000</span>
+<span class="co">#&gt; 6:            15    2.102810    2.281920       0.000000       0.000000</span>
+<span class="co">#&gt;    NEE_CUT_REF_RANDUNC NEE_VUT_REF_RANDUNC NEE_CUT_REF_JOINTUNC</span>
+<span class="co">#&gt; 1:            0.256631            0.256610             0.531910</span>
+<span class="co">#&gt; 2:            0.262284            0.256641             0.344954</span>
+<span class="co">#&gt; 3:            0.286117            0.279742             0.331389</span>
+<span class="co">#&gt; 4:            0.299541            0.284841             0.538489</span>
+<span class="co">#&gt; 5:            0.355675            0.344726             0.593355</span>
+<span class="co">#&gt; 6:            0.330171            0.281733             1.141000</span>
+<span class="co">#&gt;    NEE_VUT_REF_JOINTUNC NEE_CUT_USTAR50 NEE_VUT_USTAR50 NEE_CUT_USTAR50_QC</span>
+<span class="co">#&gt; 1:             0.449093        2.724840        2.020350           0.937500</span>
+<span class="co">#&gt; 2:             0.408952        1.989210        1.821470           0.895833</span>
+<span class="co">#&gt; 3:             0.328278        1.014760        1.045170           0.375000</span>
+<span class="co">#&gt; 4:             0.368798        0.952032        0.718048           0.187500</span>
+<span class="co">#&gt; 5:             0.357439       -0.135130       -0.333892           0.000000</span>
+<span class="co">#&gt; 6:             0.637083        2.145730        2.281920           0.000000</span>
+<span class="co">#&gt;    NEE_VUT_USTAR50_QC NEE_CUT_USTAR50_RANDUNC NEE_VUT_USTAR50_RANDUNC</span>
+<span class="co">#&gt; 1:           0.854167                0.258486                0.258711</span>
+<span class="co">#&gt; 2:           0.895833                0.262693                0.257684</span>
+<span class="co">#&gt; 3:           0.375000                0.287995                0.266192</span>
+<span class="co">#&gt; 4:           0.187500                0.298487                0.279709</span>
+<span class="co">#&gt; 5:           0.000000                0.350449                0.343963</span>
+<span class="co">#&gt; 6:           0.000000                0.330171                0.311792</span>
+<span class="co">#&gt;    NEE_CUT_USTAR50_JOINTUNC NEE_VUT_USTAR50_JOINTUNC NEE_CUT_MEAN</span>
+<span class="co">#&gt; 1:                 0.532808                 0.450296    2.4283900</span>
+<span class="co">#&gt; 2:                 0.345265                 0.409607    1.9318500</span>
+<span class="co">#&gt; 3:                 0.333011                 0.316811    0.8786990</span>
+<span class="co">#&gt; 4:                 0.537904                 0.364849    1.0724200</span>
+<span class="co">#&gt; 5:                 0.590238                 0.356703    0.0787794</span>
+<span class="co">#&gt; 6:                 1.141000                 0.650934    1.7673600</span>
+<span class="co">#&gt;    NEE_VUT_MEAN NEE_CUT_MEAN_QC NEE_VUT_MEAN_QC NEE_CUT_SE NEE_VUT_SE</span>
+<span class="co">#&gt; 1:     2.033290        0.896354        0.843229  0.0715786  0.0533371</span>
+<span class="co">#&gt; 2:     1.801190        0.896875        0.815625  0.0380919  0.0588298</span>
+<span class="co">#&gt; 3:     0.904707        0.601042        0.289583  0.0337813  0.0272087</span>
+<span class="co">#&gt; 4:     0.634031        0.342708        0.168750  0.0801161  0.0474965</span>
+<span class="co">#&gt; 5:    -0.247623        0.129167        0.000000  0.0652914  0.0240081</span>
+<span class="co">#&gt; 6:     2.515740        0.096875        0.000000  0.1423650  0.0826761</span>
+<span class="co">#&gt;    NEE_CUT_05 NEE_CUT_16 NEE_CUT_25 NEE_CUT_50 NEE_CUT_75 NEE_CUT_84</span>
+<span class="co">#&gt; 1:   1.613310  1.9708200   2.020350   2.563840   2.775190   2.902630</span>
+<span class="co">#&gt; 2:   1.400330  1.7434500   1.812630   1.928320   2.130820   2.191560</span>
+<span class="co">#&gt; 3:   0.306685  0.7107700   0.790977   0.893461   1.022570   1.045170</span>
+<span class="co">#&gt; 4:   0.641001  0.7101750   0.718954   0.923076   1.527700   1.605150</span>
+<span class="co">#&gt; 5:  -0.338306 -0.3320910  -0.329174  -0.148306   0.586692   0.617784</span>
+<span class="co">#&gt; 6:  -0.238127  0.0975558   1.682120   2.020050   2.259040   2.281920</span>
+<span class="co">#&gt;    NEE_CUT_95 NEE_VUT_05 NEE_VUT_16 NEE_VUT_25 NEE_VUT_50 NEE_VUT_75</span>
+<span class="co">#&gt; 1:   3.049770   1.613310   1.613310   1.808220   2.020350   2.020350</span>
+<span class="co">#&gt; 2:   2.281020   1.377690   1.400330   1.504910   1.812630   1.821470</span>
+<span class="co">#&gt; 3:   1.054530   0.555212   0.705202   0.714260   0.999766   1.032920</span>
+<span class="co">#&gt; 4:   1.653030  -0.257100   0.348421   0.660767   0.718954   0.749811</span>
+<span class="co">#&gt; 5:   0.686376  -0.465410  -0.336112  -0.332091  -0.313750  -0.206478</span>
+<span class="co">#&gt; 6:   2.567880   1.991860   2.021350   2.259040   2.281920   2.567880</span>
+<span class="co">#&gt;    NEE_VUT_84 NEE_VUT_95 NEE_CUT_05_QC NEE_CUT_16_QC NEE_CUT_25_QC</span>
+<span class="co">#&gt; 1:   2.350420 2.72484000      0.833333      0.854167      0.854167</span>
+<span class="co">#&gt; 2:   2.037130 2.53349000      0.812500      0.895833      0.895833</span>
+<span class="co">#&gt; 3:   1.048780 1.05057000      0.916667      0.270833      0.270833</span>
+<span class="co">#&gt; 4:   0.816941 0.91005500      0.187500      0.187500      0.187500</span>
+<span class="co">#&gt; 5:  -0.147150 0.00314502      0.000000      0.000000      0.000000</span>
+<span class="co">#&gt; 6:   3.164160 3.41185000      0.645833      0.645833      0.000000</span>
+<span class="co">#&gt;    NEE_CUT_50_QC NEE_CUT_75_QC NEE_CUT_84_QC NEE_CUT_95_QC NEE_VUT_05_QC</span>
+<span class="co">#&gt; 1:      0.937500      0.937500      0.937500      0.937500     0.8333330</span>
+<span class="co">#&gt; 2:      0.937500      0.520833      0.937500      0.937500     0.8125000</span>
+<span class="co">#&gt; 3:      1.000000      0.375000      0.375000      0.375000     0.0208333</span>
+<span class="co">#&gt; 4:      0.166667      0.604167      0.583333      0.583333     0.0833333</span>
+<span class="co">#&gt; 5:      0.000000      0.125000      0.645833      0.145833     0.0000000</span>
+<span class="co">#&gt; 6:      0.000000      0.000000      0.000000      0.000000     0.0000000</span>
+<span class="co">#&gt;    NEE_VUT_16_QC NEE_VUT_25_QC NEE_VUT_50_QC NEE_VUT_75_QC NEE_VUT_84_QC</span>
+<span class="co">#&gt; 1:      0.833333      0.833333      0.854167      0.854167      0.791667</span>
+<span class="co">#&gt; 2:      0.812500      0.812500      0.895833      0.895833      0.895833</span>
+<span class="co">#&gt; 3:      0.270833      0.270833      0.375000      0.375000      0.375000</span>
+<span class="co">#&gt; 4:      0.000000      0.187500      0.187500      0.187500      0.187500</span>
+<span class="co">#&gt; 5:      0.000000      0.000000      0.000000      0.000000      0.000000</span>
+<span class="co">#&gt; 6:      0.000000      0.000000      0.000000      0.000000      0.000000</span>
+<span class="co">#&gt;    NEE_VUT_95_QC NEE_CUT_REF_NIGHT NEE_VUT_REF_NIGHT NEE_CUT_REF_NIGHT_SD</span>
+<span class="co">#&gt; 1:      0.937500           5.48276           5.47169          3.61791e-15</span>
+<span class="co">#&gt; 2:      0.541667           4.39109           4.19630          9.09688e-01</span>
+<span class="co">#&gt; 3:      0.375000           2.80722           2.92947          1.88979e+00</span>
+<span class="co">#&gt; 4:      0.187500           2.48677           2.28624          1.41479e+00</span>
+<span class="co">#&gt; 5:      0.000000           2.08331           1.92707          1.11925e+00</span>
+<span class="co">#&gt; 6:      0.000000           4.90100           4.90019          1.37519e-01</span>
+<span class="co">#&gt;    NEE_VUT_REF_NIGHT_SD NEE_CUT_REF_NIGHT_QC NEE_VUT_REF_NIGHT_QC</span>
+<span class="co">#&gt; 1:             0.000000             1.000000             1.000000</span>
+<span class="co">#&gt; 2:             1.090200             1.000000             1.000000</span>
+<span class="co">#&gt; 3:             1.883340             0.142857             0.142857</span>
+<span class="co">#&gt; 4:             0.978581             0.000000             0.000000</span>
+<span class="co">#&gt; 5:             0.792344             0.000000             0.000000</span>
+<span class="co">#&gt; 6:             0.167141             0.000000             0.000000</span>
+<span class="co">#&gt;    NEE_CUT_REF_NIGHT_RANDUNC NEE_VUT_REF_NIGHT_RANDUNC</span>
+<span class="co">#&gt; 1:                  0.236556                  0.215648</span>
+<span class="co">#&gt; 2:                  0.252490                  0.213211</span>
+<span class="co">#&gt; 3:                  0.312401                  0.284396</span>
+<span class="co">#&gt; 4:                  0.346822                  0.317545</span>
+<span class="co">#&gt; 5:                  0.371654                  0.384616</span>
+<span class="co">#&gt; 6:                  0.329647                  0.245229</span>
+<span class="co">#&gt;    NEE_CUT_REF_NIGHT_JOINTUNC NEE_VUT_REF_NIGHT_JOINTUNC NEE_CUT_REF_DAY</span>
+<span class="co">#&gt; 1:                   0.344603                   0.424689        -1.25754</span>
+<span class="co">#&gt; 2:                   0.395255                   0.294615        -1.43616</span>
+<span class="co">#&gt; 3:                   0.777432                   0.313030        -1.57359</span>
+<span class="co">#&gt; 4:                   0.393261                   0.331180        -1.34663</span>
+<span class="co">#&gt; 5:                   0.413807                   0.417743        -2.64525</span>
+<span class="co">#&gt; 6:                   1.811010                   0.594342        -2.36124</span>
+<span class="co">#&gt;    NEE_VUT_REF_DAY NEE_CUT_REF_DAY_SD NEE_VUT_REF_DAY_SD</span>
+<span class="co">#&gt; 1:        -2.98780            3.39488            4.71704</span>
+<span class="co">#&gt; 2:        -1.66221            2.84267            3.04795</span>
+<span class="co">#&gt; 3:        -1.65106            2.28140            2.42579</span>
+<span class="co">#&gt; 4:        -1.48396            3.58783            3.64699</span>
+<span class="co">#&gt; 5:        -3.43902            2.57450            2.56069</span>
+<span class="co">#&gt; 6:        -1.92396            4.77008            4.41689</span>
+<span class="co">#&gt;    NEE_CUT_REF_DAY_QC NEE_VUT_REF_DAY_QC NEE_CUT_REF_DAY_RANDUNC</span>
+<span class="co">#&gt; 1:               0.85               0.65                0.492535</span>
+<span class="co">#&gt; 2:               0.75               0.75                0.492959</span>
+<span class="co">#&gt; 3:               0.70               0.70                0.496575</span>
+<span class="co">#&gt; 4:               0.40               0.45                0.498614</span>
+<span class="co">#&gt; 5:               0.00               0.00                0.647195</span>
+<span class="co">#&gt; 6:               0.00               0.00                0.681808</span>
+<span class="co">#&gt;    NEE_VUT_REF_DAY_RANDUNC NEE_CUT_REF_DAY_JOINTUNC</span>
+<span class="co">#&gt; 1:                0.510945                 1.383320</span>
+<span class="co">#&gt; 2:                0.513029                 0.818060</span>
+<span class="co">#&gt; 3:                0.509950                 0.952743</span>
+<span class="co">#&gt; 4:                0.491976                 0.977596</span>
+<span class="co">#&gt; 5:                0.587954                 1.338080</span>
+<span class="co">#&gt; 6:                0.620869                 0.735819</span>
+<span class="co">#&gt;    NEE_VUT_REF_DAY_JOINTUNC NEE_CUT_USTAR50_NIGHT NEE_VUT_USTAR50_NIGHT</span>
+<span class="co">#&gt; 1:                 0.678102               5.48276               5.47169</span>
+<span class="co">#&gt; 2:                 0.717205               4.39109               4.19630</span>
+<span class="co">#&gt; 3:                 0.759824               2.83100               2.90591</span>
+<span class="co">#&gt; 4:                 0.538940               2.51995               2.24616</span>
+<span class="co">#&gt; 5:                 0.668296               2.10639               1.90814</span>
+<span class="co">#&gt; 6:                 0.840349               4.90100               4.90019</span>
+<span class="co">#&gt;    NEE_CUT_USTAR50_NIGHT_SD NEE_VUT_USTAR50_NIGHT_SD</span>
+<span class="co">#&gt; 1:              3.61791e-15                 0.000000</span>
+<span class="co">#&gt; 2:              9.09688e-01                 1.090200</span>
+<span class="co">#&gt; 3:              1.87357e+00                 1.904520</span>
+<span class="co">#&gt; 4:              1.38150e+00                 1.019010</span>
+<span class="co">#&gt; 5:              1.09994e+00                 0.806135</span>
+<span class="co">#&gt; 6:              1.37519e-01                 0.167141</span>
+<span class="co">#&gt;    NEE_CUT_USTAR50_NIGHT_QC NEE_VUT_USTAR50_NIGHT_QC</span>
+<span class="co">#&gt; 1:                 1.000000                 1.000000</span>
+<span class="co">#&gt; 2:                 1.000000                 1.000000</span>
+<span class="co">#&gt; 3:                 0.142857                 0.142857</span>
+<span class="co">#&gt; 4:                 0.000000                 0.000000</span>
+<span class="co">#&gt; 5:                 0.000000                 0.000000</span>
+<span class="co">#&gt; 6:                 0.000000                 0.000000</span>
+<span class="co">#&gt;    NEE_CUT_USTAR50_NIGHT_RANDUNC NEE_VUT_USTAR50_NIGHT_RANDUNC</span>
+<span class="co">#&gt; 1:                      0.245836                      0.215648</span>
+<span class="co">#&gt; 2:                      0.255141                      0.214218</span>
+<span class="co">#&gt; 3:                      0.311368                      0.248195</span>
+<span class="co">#&gt; 4:                      0.346822                      0.307378</span>
+<span class="co">#&gt; 5:                      0.371654                      0.384177</span>
+<span class="co">#&gt; 6:                      0.329647                      0.311755</span>
+<span class="co">#&gt;    NEE_CUT_USTAR50_NIGHT_JOINTUNC NEE_VUT_USTAR50_NIGHT_JOINTUNC</span>
+<span class="co">#&gt; 1:                       0.351039                       0.424689</span>
+<span class="co">#&gt; 2:                       0.396954                       0.295345</span>
+<span class="co">#&gt; 3:                       0.777018                       0.280549</span>
+<span class="co">#&gt; 4:                       0.393261                       0.321444</span>
+<span class="co">#&gt; 5:                       0.413807                       0.417339</span>
+<span class="co">#&gt; 6:                       1.811010                       0.624737</span>
+<span class="co">#&gt;    NEE_CUT_USTAR50_DAY NEE_VUT_USTAR50_DAY NEE_CUT_USTAR50_DAY_SD</span>
+<span class="co">#&gt; 1:            -1.37397            -2.98780                3.53368</span>
+<span class="co">#&gt; 2:            -1.54697            -1.66221                2.99144</span>
+<span class="co">#&gt; 3:            -1.61652            -1.65106                2.29797</span>
+<span class="co">#&gt; 4:            -1.32611            -1.48396                3.59227</span>
+<span class="co">#&gt; 5:            -3.26147            -3.44361                2.72890</span>
+<span class="co">#&gt; 6:            -2.25674            -1.92396                4.64545</span>
+<span class="co">#&gt;    NEE_VUT_USTAR50_DAY_SD NEE_CUT_USTAR50_DAY_QC NEE_VUT_USTAR50_DAY_QC</span>
+<span class="co">#&gt; 1:                4.71704                   0.85                   0.65</span>
+<span class="co">#&gt; 2:                3.04795                   0.75                   0.75</span>
+<span class="co">#&gt; 3:                2.42579                   0.70                   0.70</span>
+<span class="co">#&gt; 4:                3.64699                   0.45                   0.45</span>
+<span class="co">#&gt; 5:                2.55162                   0.00                   0.00</span>
+<span class="co">#&gt; 6:                4.41689                   0.00                   0.00</span>
+<span class="co">#&gt;    NEE_CUT_USTAR50_DAY_RANDUNC NEE_VUT_USTAR50_DAY_RANDUNC</span>
+<span class="co">#&gt; 1:                    0.488803                    0.516580</span>
+<span class="co">#&gt; 2:                    0.491447                    0.514998</span>
+<span class="co">#&gt; 3:                    0.503601                    0.508203</span>
+<span class="co">#&gt; 4:                    0.495008                    0.489264</span>
+<span class="co">#&gt; 5:                    0.630789                    0.586123</span>
+<span class="co">#&gt; 6:                    0.681808                    0.628328</span>
+<span class="co">#&gt;    NEE_CUT_USTAR50_DAY_JOINTUNC NEE_VUT_USTAR50_DAY_JOINTUNC</span>
+<span class="co">#&gt; 1:                     1.381990                     0.682359</span>
+<span class="co">#&gt; 2:                     0.817150                     0.718616</span>
+<span class="co">#&gt; 3:                     0.956424                     0.758653</span>
+<span class="co">#&gt; 4:                     0.975762                     0.536465</span>
+<span class="co">#&gt; 5:                     1.330230                     0.666685</span>
+<span class="co">#&gt; 6:                     0.735819                     0.845876</span>
+<span class="co">#&gt;    NEE_CUT_05_NIGHT NEE_CUT_16_NIGHT NEE_CUT_25_NIGHT NEE_CUT_50_NIGHT</span>
+<span class="co">#&gt; 1:          4.81700          4.98159          5.08744          5.39471</span>
+<span class="co">#&gt; 2:          3.61554          3.78290          3.93220          4.09142</span>
+<span class="co">#&gt; 3:          1.38812          1.48210          1.49614          2.80722</span>
+<span class="co">#&gt; 4:          2.15566          2.23813          2.24616          2.47462</span>
+<span class="co">#&gt; 5:          1.39703          1.71618          1.78721          1.92266</span>
+<span class="co">#&gt; 6:          1.24367          1.33950          4.26247          4.73272</span>
+<span class="co">#&gt;    NEE_CUT_75_NIGHT NEE_CUT_84_NIGHT NEE_CUT_95_NIGHT NEE_VUT_05_NIGHT</span>
+<span class="co">#&gt; 1:          5.47169          5.48276          5.53675          5.35859</span>
+<span class="co">#&gt; 2:          4.19630          4.39109          4.39109          4.09013</span>
+<span class="co">#&gt; 3:          2.87409          2.90591          2.94433          2.82521</span>
+<span class="co">#&gt; 4:          2.53697          2.60891          2.60891          1.49902</span>
+<span class="co">#&gt; 5:          1.97564          2.08010          2.11433          1.43311</span>
+<span class="co">#&gt; 6:          4.90019          4.90100          4.95805          4.73272</span>
+<span class="co">#&gt;    NEE_VUT_16_NIGHT NEE_VUT_25_NIGHT NEE_VUT_50_NIGHT NEE_VUT_75_NIGHT</span>
+<span class="co">#&gt; 1:          5.39471          5.43616          5.47169          5.53675</span>
+<span class="co">#&gt; 2:          4.09142          4.19376          4.19630          4.39109</span>
+<span class="co">#&gt; 3:          2.83466          2.85506          2.90591          2.98145</span>
+<span class="co">#&gt; 4:          2.15566          2.17752          2.24616          2.24766</span>
+<span class="co">#&gt; 5:          1.64629          1.90814          1.91784          1.92969</span>
+<span class="co">#&gt; 6:          4.73272          4.86617          4.90019          4.95805</span>
+<span class="co">#&gt;    NEE_VUT_84_NIGHT NEE_VUT_95_NIGHT NEE_CUT_05_NIGHT_QC</span>
+<span class="co">#&gt; 1:          6.12644          6.64760                   1</span>
+<span class="co">#&gt; 2:          4.49806          6.49721                   1</span>
+<span class="co">#&gt; 3:          3.09625          3.62446                   1</span>
+<span class="co">#&gt; 4:          2.34375          2.63504                   0</span>
+<span class="co">#&gt; 5:          1.97235          2.10079                   0</span>
+<span class="co">#&gt; 6:          5.81550          5.98335                   1</span>
+<span class="co">#&gt;    NEE_CUT_16_NIGHT_QC NEE_CUT_25_NIGHT_QC NEE_CUT_50_NIGHT_QC</span>
+<span class="co">#&gt; 1:                1.00                1.00            1.000000</span>
+<span class="co">#&gt; 2:                1.00                1.00            1.000000</span>
+<span class="co">#&gt; 3:                1.00                1.00            0.142857</span>
+<span class="co">#&gt; 4:                0.00                0.00            0.000000</span>
+<span class="co">#&gt; 5:                0.75                0.75            0.000000</span>
+<span class="co">#&gt; 6:                1.00                0.00            0.000000</span>
+<span class="co">#&gt;    NEE_CUT_75_NIGHT_QC NEE_CUT_84_NIGHT_QC NEE_CUT_95_NIGHT_QC</span>
+<span class="co">#&gt; 1:            1.000000            1.000000            1.000000</span>
+<span class="co">#&gt; 2:            1.000000            1.000000            1.000000</span>
+<span class="co">#&gt; 3:            0.142857            0.142857            0.142857</span>
+<span class="co">#&gt; 4:            0.500000            0.500000            0.500000</span>
+<span class="co">#&gt; 5:            0.000000            0.000000            0.000000</span>
+<span class="co">#&gt; 6:            0.000000            0.000000            0.000000</span>
+<span class="co">#&gt;    NEE_VUT_05_NIGHT_QC NEE_VUT_16_NIGHT_QC NEE_VUT_25_NIGHT_QC</span>
+<span class="co">#&gt; 1:            1.000000            1.000000            1.000000</span>
+<span class="co">#&gt; 2:            1.000000            1.000000            1.000000</span>
+<span class="co">#&gt; 3:            0.142857            0.142857            0.142857</span>
+<span class="co">#&gt; 4:            0.000000            0.000000            0.000000</span>
+<span class="co">#&gt; 5:            0.000000            0.000000            0.000000</span>
+<span class="co">#&gt; 6:            0.000000            0.000000            0.000000</span>
+<span class="co">#&gt;    NEE_VUT_50_NIGHT_QC NEE_VUT_75_NIGHT_QC NEE_VUT_84_NIGHT_QC</span>
+<span class="co">#&gt; 1:            1.000000            1.000000            1.000000</span>
+<span class="co">#&gt; 2:            1.000000            1.000000            1.000000</span>
+<span class="co">#&gt; 3:            0.142857            0.142857            0.142857</span>
+<span class="co">#&gt; 4:            0.000000            0.000000            0.000000</span>
+<span class="co">#&gt; 5:            0.000000            0.000000            0.000000</span>
+<span class="co">#&gt; 6:            0.000000            0.000000            0.000000</span>
+<span class="co">#&gt;    NEE_VUT_95_NIGHT_QC NEE_CUT_05_DAY NEE_CUT_16_DAY NEE_CUT_25_DAY</span>
+<span class="co">#&gt; 1:            1.000000       -3.87945       -2.99838       -2.98780</span>
+<span class="co">#&gt; 2:            0.642857       -2.68502       -1.69402       -1.68265</span>
+<span class="co">#&gt; 3:            0.000000       -2.76512       -1.65631       -1.64208</span>
+<span class="co">#&gt; 4:            0.000000       -1.76438       -1.52034       -1.48396</span>
+<span class="co">#&gt; 5:            0.000000       -3.45381       -3.45302       -3.44361</span>
+<span class="co">#&gt; 6:            0.000000       -2.62421       -2.47738       -2.40059</span>
+<span class="co">#&gt;    NEE_CUT_50_DAY NEE_CUT_75_DAY NEE_CUT_84_DAY NEE_CUT_95_DAY</span>
+<span class="co">#&gt; 1:       -1.37397      -0.741388     -0.4130530      0.0791293</span>
+<span class="co">#&gt; 2:       -1.54697      -0.437572     -0.3883180     -0.0206220</span>
+<span class="co">#&gt; 3:       -1.61652      -0.118249     -0.0301117     -0.0282408</span>
+<span class="co">#&gt; 4:       -1.34663       0.106920      0.1614180      0.1705840</span>
+<span class="co">#&gt; 5:       -2.86120      -1.147590     -1.1107100     -1.0403100</span>
+<span class="co">#&gt; 6:       -2.29542      -1.927730     -1.9239600     -1.3161000</span>
+<span class="co">#&gt;    NEE_VUT_05_DAY NEE_VUT_16_DAY NEE_VUT_25_DAY NEE_VUT_50_DAY</span>
+<span class="co">#&gt; 1:       -3.87945       -3.87945       -3.87017       -2.99838</span>
+<span class="co">#&gt; 2:       -3.98437       -2.68502       -2.66252       -1.69402</span>
+<span class="co">#&gt; 3:       -4.32620       -2.76512       -2.42760       -1.65631</span>
+<span class="co">#&gt; 4:       -2.88324       -1.86692       -1.55614       -1.48396</span>
+<span class="co">#&gt; 5:       -3.45381       -3.45302       -3.45302       -3.34600</span>
+<span class="co">#&gt; 6:       -2.37449       -2.30585       -1.92773       -1.92396</span>
+<span class="co">#&gt;    NEE_VUT_75_DAY NEE_VUT_84_DAY NEE_VUT_95_DAY NEE_CUT_05_DAY_QC</span>
+<span class="co">#&gt; 1:       -2.98780       -2.98780      -2.987800          0.600000</span>
+<span class="co">#&gt; 2:       -1.68265       -1.68265      -1.662210          0.550000</span>
+<span class="co">#&gt; 3:       -1.64208       -1.63856      -1.616520          0.350000</span>
+<span class="co">#&gt; 4:       -1.46082       -1.42685      -1.243990          0.400000</span>
+<span class="co">#&gt; 5:       -3.02537       -2.81764      -2.645250          0.000000</span>
+<span class="co">#&gt; 6:       -1.32736       -1.17323      -0.826405          0.105263</span>
+<span class="co">#&gt;    NEE_CUT_16_DAY_QC NEE_CUT_25_DAY_QC NEE_CUT_50_DAY_QC NEE_CUT_75_DAY_QC</span>
+<span class="co">#&gt; 1:              0.65              0.65              0.85              0.85</span>
+<span class="co">#&gt; 2:              0.75              0.75              0.75              0.85</span>
+<span class="co">#&gt; 3:              0.70              0.70              0.70              1.00</span>
+<span class="co">#&gt; 4:              0.45              0.45              0.40              0.75</span>
+<span class="co">#&gt; 5:              0.00              0.00              0.00              0.35</span>
+<span class="co">#&gt; 6:              0.00              0.00              0.00              0.00</span>
+<span class="co">#&gt;    NEE_CUT_84_DAY_QC NEE_CUT_95_DAY_QC NEE_VUT_05_DAY_QC NEE_VUT_16_DAY_QC</span>
+<span class="co">#&gt; 1:              0.85              0.85              0.60              0.60</span>
+<span class="co">#&gt; 2:              0.85              0.85              0.25              0.55</span>
+<span class="co">#&gt; 3:              1.00              1.00              0.00              0.35</span>
+<span class="co">#&gt; 4:              0.70              0.70              0.00              0.25</span>
+<span class="co">#&gt; 5:              0.35              0.50              0.00              0.00</span>
+<span class="co">#&gt; 6:              0.00              0.00              0.00              0.00</span>
+<span class="co">#&gt;    NEE_VUT_25_DAY_QC NEE_VUT_50_DAY_QC NEE_VUT_75_DAY_QC NEE_VUT_84_DAY_QC</span>
+<span class="co">#&gt; 1:              0.60              0.65              0.65              0.65</span>
+<span class="co">#&gt; 2:              0.55              0.75              0.75              0.75</span>
+<span class="co">#&gt; 3:              0.45              0.70              0.70              0.70</span>
+<span class="co">#&gt; 4:              0.45              0.45              0.45              0.45</span>
+<span class="co">#&gt; 5:              0.00              0.00              0.00              0.00</span>
+<span class="co">#&gt; 6:              0.00              0.00              0.00              0.00</span>
+<span class="co">#&gt;    NEE_VUT_95_DAY_QC RECO_NT_VUT_REF RECO_NT_VUT_USTAR50 RECO_NT_VUT_MEAN</span>
+<span class="co">#&gt; 1:              0.65         1.84292             1.83387          1.71995</span>
+<span class="co">#&gt; 2:              0.75         2.18902             2.18023          2.07064</span>
+<span class="co">#&gt; 3:              0.70         2.79237             2.78414          2.68619</span>
+<span class="co">#&gt; 4:              0.45         3.33650             3.32952          3.26342</span>
+<span class="co">#&gt; 5:              0.00         3.25497             3.24790          3.17660</span>
+<span class="co">#&gt; 6:              0.00         4.37778             4.37423          4.40450</span>
+<span class="co">#&gt;    RECO_NT_VUT_SE RECO_NT_VUT_05 RECO_NT_VUT_16 RECO_NT_VUT_25</span>
+<span class="co">#&gt; 1:      0.0574857       0.667894        1.52245        1.59762</span>
+<span class="co">#&gt; 2:      0.0580981       0.998128        1.86777        1.96053</span>
+<span class="co">#&gt; 3:      0.0576094       1.614340        2.47418        2.57785</span>
+<span class="co">#&gt; 4:      0.0490556       2.370770        3.04800        3.15722</span>
+<span class="co">#&gt; 5:      0.0507703       2.243050        2.96265        3.07420</span>
+<span class="co">#&gt; 6:      0.0270538       4.149380        4.28891        4.29314</span>
+<span class="co">#&gt;    RECO_NT_VUT_50 RECO_NT_VUT_75 RECO_NT_VUT_84 RECO_NT_VUT_95</span>
+<span class="co">#&gt; 1:        1.81417        1.84360        1.90409        2.23275</span>
+<span class="co">#&gt; 2:        2.16387        2.19384        2.25248        2.58366</span>
+<span class="co">#&gt; 3:        2.76922        2.80477        2.85959        3.19398</span>
+<span class="co">#&gt; 4:        3.31285        3.34788        3.47172        3.72112</span>
+<span class="co">#&gt; 5:        3.23098        3.26651        3.40845        3.63402</span>
+<span class="co">#&gt; 6:        4.37778        4.42962        4.57044        4.73000</span>
+<span class="co">#&gt;    RECO_NT_CUT_REF RECO_NT_CUT_USTAR50 RECO_NT_CUT_MEAN RECO_NT_CUT_SE</span>
+<span class="co">#&gt; 1:         1.80483             1.78126          1.64217      0.0381883</span>
+<span class="co">#&gt; 2:         2.18684             2.16342          1.97810      0.0435814</span>
+<span class="co">#&gt; 3:         2.85031             2.82764          2.56782      0.0547725</span>
+<span class="co">#&gt; 4:         3.47172             3.45188          3.11346      0.0684560</span>
+<span class="co">#&gt; 5:         3.40845             3.38814          3.02632      0.0734410</span>
+<span class="co">#&gt; 6:         4.70493             4.69362          4.17564      0.1063750</span>
+<span class="co">#&gt;    RECO_NT_CUT_05 RECO_NT_CUT_16 RECO_NT_CUT_25 RECO_NT_CUT_50</span>
+<span class="co">#&gt; 1:        1.23608        1.32342        1.37583        1.66040</span>
+<span class="co">#&gt; 2:        1.40573        1.65056        1.68886        2.00422</span>
+<span class="co">#&gt; 3:        1.59070        2.23675        2.30221        2.60587</span>
+<span class="co">#&gt; 4:        1.63091        2.80315        3.01060        3.16160</span>
+<span class="co">#&gt; 5:        1.38962        2.71875        2.90331        3.07773</span>
+<span class="co">#&gt; 6:        1.50256        3.94353        4.12531        4.28891</span>
+<span class="co">#&gt;    RECO_NT_CUT_75 RECO_NT_CUT_84 RECO_NT_CUT_95 GPP_NT_VUT_REF</span>
+<span class="co">#&gt; 1:        1.84055        1.86536        1.90840      0.0883804</span>
+<span class="co">#&gt; 2:        2.18458        2.19223        2.28914      0.6757660</span>
+<span class="co">#&gt; 3:        2.79237        2.84779        2.94845      1.9635500</span>
+<span class="co">#&gt; 4:        3.34059        3.45990        3.55703      2.5138700</span>
+<span class="co">#&gt; 5:        3.25779        3.39635        3.49577      3.3994200</span>
+<span class="co">#&gt; 6:        4.42962        4.68762        4.73804      2.0605700</span>
+<span class="co">#&gt;    GPP_NT_VUT_USTAR50 GPP_NT_VUT_MEAN GPP_NT_VUT_SE GPP_NT_VUT_05</span>
+<span class="co">#&gt; 1:          -0.186482       -0.313342     0.0947349     -1.870960</span>
+<span class="co">#&gt; 2:           0.358755        0.269451     0.1019960     -1.428120</span>
+<span class="co">#&gt; 3:           1.738970        1.781480     0.0596772      0.952082</span>
+<span class="co">#&gt; 4:           2.611470        2.629390     0.0416244      2.387230</span>
+<span class="co">#&gt; 5:           3.581790        3.424220     0.0601601      2.487120</span>
+<span class="co">#&gt; 6:           2.092310        1.888760     0.0815463      0.495503</span>
+<span class="co">#&gt;    GPP_NT_VUT_16 GPP_NT_VUT_25 GPP_NT_VUT_50 GPP_NT_VUT_75 GPP_NT_VUT_84</span>
+<span class="co">#&gt; 1:     -0.970352     -0.424861     -0.177432      0.125597      0.200867</span>
+<span class="co">#&gt; 2:      0.124320      0.137428      0.376383      0.734184      0.776149</span>
+<span class="co">#&gt; 3:      1.469900      1.559580      1.753100      2.013440      2.071070</span>
+<span class="co">#&gt; 4:      2.429430      2.512050      2.601640      2.657730      2.768030</span>
+<span class="co">#&gt; 5:      3.294740      3.374020      3.447460      3.572310      3.600400</span>
+<span class="co">#&gt; 6:      1.538640      1.843500      2.058200      2.134420      2.217270</span>
+<span class="co">#&gt;    GPP_NT_VUT_95 GPP_NT_CUT_REF GPP_NT_CUT_USTAR50 GPP_NT_CUT_MEAN</span>
+<span class="co">#&gt; 1:      0.219375      -0.970352          -0.943587      -0.7862170</span>
+<span class="co">#&gt; 2:      0.891618       0.149715           0.174209       0.0462537</span>
+<span class="co">#&gt; 3:      2.382440       1.831390           1.812880       1.6891200</span>
+<span class="co">#&gt; 4:      3.025890       2.548640           2.499850       2.0410400</span>
+<span class="co">#&gt; 5:      3.851460       3.291100           3.523270       2.9475400</span>
+<span class="co">#&gt; 6:      2.299400       2.602120           2.547880       2.4082700</span>
+<span class="co">#&gt;    GPP_NT_CUT_SE GPP_NT_CUT_05 GPP_NT_CUT_16 GPP_NT_CUT_25 GPP_NT_CUT_50</span>
+<span class="co">#&gt; 1:     0.0981644     -1.693710      -1.57922     -1.215830     -0.945088</span>
+<span class="co">#&gt; 2:     0.0724111     -0.781621      -0.56185     -0.509754      0.128187</span>
+<span class="co">#&gt; 3:     0.0551219      0.805144       1.34329      1.474260      1.738080</span>
+<span class="co">#&gt; 4:     0.1240800      0.178488       1.18810      1.377510      2.421610</span>
+<span class="co">#&gt; 5:     0.1249990      0.718482       2.11248      2.432950      3.329300</span>
+<span class="co">#&gt; 6:     0.1127130      1.405000       1.98668      2.076410      2.269840</span>
+<span class="co">#&gt;    GPP_NT_CUT_75 GPP_NT_CUT_84 GPP_NT_CUT_95 RECO_DT_VUT_REF</span>
+<span class="co">#&gt; 1:     -0.186482     -0.124023      0.125597         1.37936</span>
+<span class="co">#&gt; 2:      0.358755      0.421986      0.781216         1.71388</span>
+<span class="co">#&gt; 3:      1.895220      2.050060      2.174970         2.33005</span>
+<span class="co">#&gt; 4:      2.614100      2.641370      2.652580         2.97772</span>
+<span class="co">#&gt; 5:      3.525740      3.591530      3.702250         2.88185</span>
+<span class="co">#&gt; 6:      2.541890      2.647520      4.197160         4.45520</span>
+<span class="co">#&gt;    RECO_DT_VUT_USTAR50 RECO_DT_VUT_MEAN RECO_DT_VUT_SE RECO_DT_VUT_05</span>
+<span class="co">#&gt; 1:             1.59597          1.81084       0.126091        1.37936</span>
+<span class="co">#&gt; 2:             1.97401          2.16305       0.130475        1.71388</span>
+<span class="co">#&gt; 3:             2.62265          2.77511       0.136870        2.29230</span>
+<span class="co">#&gt; 4:             3.25654          3.37229       0.136056        2.86071</span>
+<span class="co">#&gt; 5:             3.25039          3.34524       0.136650        2.81255</span>
+<span class="co">#&gt; 6:             4.57554          4.64011       0.122306        4.06293</span>
+<span class="co">#&gt;    RECO_DT_VUT_16 RECO_DT_VUT_25 RECO_DT_VUT_50 RECO_DT_VUT_75</span>
+<span class="co">#&gt; 1:        1.41352        1.43227        1.53333        1.59522</span>
+<span class="co">#&gt; 2:        1.74869        1.76972        1.87765        1.97314</span>
+<span class="co">#&gt; 3:        2.34097        2.35427        2.49861        2.62155</span>
+<span class="co">#&gt; 4:        2.91815        2.94665        3.15029        3.25780</span>
+<span class="co">#&gt; 5:        2.88085        2.92669        3.10596        3.25016</span>
+<span class="co">#&gt; 6:        4.10361        4.24256        4.52882        4.58910</span>
+<span class="co">#&gt;    RECO_DT_VUT_84 RECO_DT_VUT_95 RECO_DT_CUT_REF RECO_DT_CUT_USTAR50</span>
+<span class="co">#&gt; 1:        2.56284        3.94770        0.997674             1.54257</span>
+<span class="co">#&gt; 2:        2.94393        4.28005        1.273660             1.82986</span>
+<span class="co">#&gt; 3:        3.57977        4.83007        1.786610             2.36761</span>
+<span class="co">#&gt; 4:        4.13949        5.26965        2.356240             2.92096</span>
+<span class="co">#&gt; 5:        4.14029        5.25724        2.288530             2.82322</span>
+<span class="co">#&gt; 6:        5.21963        6.25080        3.723890             4.21555</span>
+<span class="co">#&gt;    RECO_DT_CUT_MEAN RECO_DT_CUT_SE RECO_DT_CUT_05 RECO_DT_CUT_16</span>
+<span class="co">#&gt; 1:          1.31755      0.0813670       0.699875       0.790771</span>
+<span class="co">#&gt; 2:          1.62379      0.0881682       0.908808       1.037060</span>
+<span class="co">#&gt; 3:          2.17527      0.0989849       1.290090       1.511500</span>
+<span class="co">#&gt; 4:          2.75126      0.1043770       1.732150       2.053390</span>
+<span class="co">#&gt; 5:          2.70869      0.1031210       1.655500       2.042960</span>
+<span class="co">#&gt; 6:          4.06347      0.1060520       2.862590       3.273080</span>
+<span class="co">#&gt;    RECO_DT_CUT_25 RECO_DT_CUT_50 RECO_DT_CUT_75 RECO_DT_CUT_84</span>
+<span class="co">#&gt; 1:       0.845587        1.41795        1.54054        1.57232</span>
+<span class="co">#&gt; 2:       1.093150        1.73626        1.85193        1.92156</span>
+<span class="co">#&gt; 3:       1.565730        2.32509        2.40027        2.53543</span>
+<span class="co">#&gt; 4:       2.121700        2.91815        3.04319        3.19338</span>
+<span class="co">#&gt; 5:       2.122530        2.82330        2.95915        3.16248</span>
+<span class="co">#&gt; 6:       3.466730        4.20189        4.46098        4.57554</span>
+<span class="co">#&gt;    RECO_DT_CUT_95 GPP_DT_VUT_REF GPP_DT_VUT_USTAR50 GPP_DT_VUT_MEAN</span>
+<span class="co">#&gt; 1:        1.59597        1.62313            1.62393         2.74218</span>
+<span class="co">#&gt; 2:        1.97401        1.68900            1.68980         2.69765</span>
+<span class="co">#&gt; 3:        2.62265        1.82043            1.82120         2.78259</span>
+<span class="co">#&gt; 4:        3.25780        1.60072            1.60120         2.30194</span>
+<span class="co">#&gt; 5:        3.25039        1.38810            1.38815         1.88465</span>
+<span class="co">#&gt; 6:        4.60061        1.28648            1.28623         1.68611</span>
+<span class="co">#&gt;    GPP_DT_VUT_SE GPP_DT_VUT_05 GPP_DT_VUT_16 GPP_DT_VUT_25 GPP_DT_VUT_50</span>
+<span class="co">#&gt; 1:     0.2074110       1.62068       1.62247       1.62313       1.71171</span>
+<span class="co">#&gt; 2:     0.1878350       1.68755       1.68850       1.69240       1.78684</span>
+<span class="co">#&gt; 3:     0.1787950       1.81921       1.81996       1.82261       1.93718</span>
+<span class="co">#&gt; 4:     0.1346680       1.60005       1.60028       1.60996       1.69320</span>
+<span class="co">#&gt; 5:     0.0999667       1.38638       1.38752       1.39352       1.44044</span>
+<span class="co">#&gt; 6:     0.0817391       1.28501       1.28580       1.29089       1.32572</span>
+<span class="co">#&gt;    GPP_DT_VUT_75 GPP_DT_VUT_84 GPP_DT_VUT_95 GPP_DT_CUT_REF</span>
+<span class="co">#&gt; 1:       3.29437       4.37637       5.28379        1.61536</span>
+<span class="co">#&gt; 2:       3.15269       4.18450       4.94878        1.68023</span>
+<span class="co">#&gt; 3:       3.19027       4.19509       4.93332        1.80518</span>
+<span class="co">#&gt; 4:       2.55027       3.38369       3.94130        1.60208</span>
+<span class="co">#&gt; 5:       2.03136       2.69432       3.09473        1.40322</span>
+<span class="co">#&gt; 6:       1.79811       2.34569       2.67074        1.30153</span>
+<span class="co">#&gt;    GPP_DT_CUT_USTAR50 GPP_DT_CUT_MEAN GPP_DT_CUT_SE GPP_DT_CUT_05</span>
+<span class="co">#&gt; 1:            1.61589         1.73999     0.1468970      0.964816</span>
+<span class="co">#&gt; 2:            1.68064         1.78472     0.1320970      1.067940</span>
+<span class="co">#&gt; 3:            1.80554         1.90873     0.1258700      1.215940</span>
+<span class="co">#&gt; 4:            1.60216         1.64913     0.0908787      1.139430</span>
+<span class="co">#&gt; 5:            1.40311         1.41317     0.0633027      1.036190</span>
+<span class="co">#&gt; 6:            1.30138         1.30805     0.0502568      1.026040</span>
+<span class="co">#&gt;    GPP_DT_CUT_16 GPP_DT_CUT_25 GPP_DT_CUT_50 GPP_DT_CUT_75 GPP_DT_CUT_84</span>
+<span class="co">#&gt; 1:       1.08044       1.14722       1.61590       1.70085       1.71171</span>
+<span class="co">#&gt; 2:       1.17515       1.23311       1.68064       1.77945       1.78684</span>
+<span class="co">#&gt; 3:       1.31782       1.37586       1.80555       1.93110       1.93718</span>
+<span class="co">#&gt; 4:       1.22130       1.23352       1.60028       1.67497       1.69320</span>
+<span class="co">#&gt; 5:       1.09748       1.13701       1.38748       1.42567       1.44044</span>
+<span class="co">#&gt; 6:       1.05442       1.10825       1.28569       1.31304       1.32572</span>
+<span class="co">#&gt;    GPP_DT_CUT_95 RECO_SR RECO_SR_N   datetime   YYYYMMDD YEAR DOY</span>
+<span class="co">#&gt; 1:       3.29133      NA        NA 2014-11-15 2014-11-15 2014 319</span>
+<span class="co">#&gt; 2:       3.14938      NA        NA 2014-11-16 2014-11-16 2014 320</span>
+<span class="co">#&gt; 3:       3.18605      NA        NA 2014-11-17 2014-11-17 2014 321</span>
+<span class="co">#&gt; 4:       2.54846      NA        NA 2014-11-18 2014-11-18 2014 322</span>
+<span class="co">#&gt; 5:       2.03130      NA        NA 2014-11-19 2014-11-19 2014 323</span>
+<span class="co">#&gt; 6:       1.79805      NA        NA 2014-11-20 2014-11-20 2014 324</span></code></pre></div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
