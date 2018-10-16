@@ -2,7 +2,6 @@
 
 # Extracting PhenoCam data using phenocam R Package 
 
-
 ```{r setup, include = FALSE, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
