@@ -1,5 +1,5 @@
 library(testthat)
-library(phenocam)
+library(phenocamapi)
 library(data.table)
 
-test_check("phenocam")
+test_check("phenocamapi")
