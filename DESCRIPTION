@@ -1,4 +1,4 @@
-Package: phenocam
+Package: phenocamapi
 Type: Package
 Title: Interacting with the PhenoCam data
 Version: 0.1.0
@@ -10,8 +10,10 @@ Encoding: UTF-8
 LazyData: true
 Depends:
   data.table,
+  lubridate,
+  rjson,
+  RCurl,
   utils,
-  rjson
 Suggests: testthat,
     knitr,
     rmarkdown

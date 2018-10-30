@@ -3,7 +3,7 @@
 # Extracting PhenoCam data using phenocam R Package 
 
 
-```{r setup, include = FALSE, echo = FALSE}
+```{r}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -16,21 +16,21 @@ Each site has specific metadata including but not limited to how the site is set
 This R package is an effort to simplify data wrangling steps and finally merge them as a single dataframe.
 
 # Installation
-`phenocam` can be directly installed from the [GitHub repo](https://github.com/bnasr/phenocam):
+`phenocamapi` can be directly installed from the [GitHub repo](https://github.com/bnasr/phenocamapi):
 ```{r}
 # installing the package from the GitHub repo
 if(!require(devtools)) install.packages('devtools')
-devtools::install_github('bnasr/phenocam')
+devtools::install_github('bnasr/phenocamapi')
 
 # loading the package
-library(phenocam)
+library(phenocamapi)
 ```
 
 
 # Usage
 The vignette page contains useful information on how to use the R package.
 ```{r}
-browseVignettes('phenocam')
+browseVignettes('phenocamapi')
 ```
 
 Detailed guides on how to use each function has been provided in the manual page of each function.

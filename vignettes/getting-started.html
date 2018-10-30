@@ -12,7 +12,7 @@
 
 <meta name="author" content="Bijan Seyednasrollah" />
 
-<meta name="date" content="2018-10-16" />
+<meta name="date" content="2018-10-30" />
 
 <title>PhenoCam Data Fusion</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">PhenoCam Data Fusion</h1>
 <h4 class="author"><em>Bijan Seyednasrollah</em></h4>
-<h4 class="date"><em>2018-10-16</em></h4>
+<h4 class="date"><em>2018-10-30</em></h4>
 
 
 
@@ -81,10 +81,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2>Exploriong the PhenoCam metadata</h2>
 <p>We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the <code>getphenos()</code> function. The returning value would be a data.table in order to simplify further data exploration.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
-<span class="kw">library</span>(phenocam)
+<span class="kw">library</span>(phenocamapi)
 
 <span class="co"># obtaining the metadata as data.table</span>
-phenos &lt;-<span class="st"> </span><span class="kw">getphenos</span>()
+phenos &lt;-<span class="st"> </span><span class="kw">get_phenos</span>()
 
 <span class="kw">head</span>(phenos)
 <span class="co">#&gt;              site      lat        lon elev active utc_offset date_first</span>
@@ -95,10 +95,10 @@ phenos &lt;-<span class="st"> </span><span class="kw">getphenos</span>()
 <span class="co">#&gt; 5:      alleypond 40.74284  -73.74304   61  FALSE         -5 2014-11-05</span>
 <span class="co">#&gt; 6: alligatorriver 35.78790  -75.90380    1   TRUE         -5 2012-05-03</span>
 <span class="co">#&gt;     date_last                                             site_description</span>
-<span class="co">#&gt; 1: 2018-10-15 Acadia National Park, McFarland Hill, near Bar Harbor, Maine</span>
-<span class="co">#&gt; 2: 2018-10-15                            Agua Tibia Wilderness, California</span>
+<span class="co">#&gt; 1: 2018-10-29 Acadia National Park, McFarland Hill, near Bar Harbor, Maine</span>
+<span class="co">#&gt; 2: 2018-10-29                            Agua Tibia Wilderness, California</span>
 <span class="co">#&gt; 3: 2006-10-25                            Agua Tibia Wilderness, California</span>
-<span class="co">#&gt; 4: 2018-10-15          Ahwahnee Meadow, Yosemite National Park, California</span>
+<span class="co">#&gt; 4: 2018-10-29          Ahwahnee Meadow, Yosemite National Park, California</span>
 <span class="co">#&gt; 5: 2015-10-13                                 Alley Pond, Queens, New York</span>
 <span class="co">#&gt; 6: 2018-10-10     Alligator River National Wildlife Refuge, North Carolina</span>
 <span class="co">#&gt;    camera_description camera_orientation flux_data flux_networks</span>
@@ -171,58 +171,58 @@ DB.flux &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span>
 <h2>Downloading Phenocam timeseries data</h2>
 <p>To download the phenological time-series from the PhenoCam, we need to know the sitename, vegetation type and ROI ID. This information can be obtained from the <a href="https://phenocam.sr.unh.edu/webcam/">PhenoCam website</a> or using the <code>getrois()</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># obtaining the list of all the available ROI's on the PhenoCam server</span>
-rois &lt;-<span class="st"> </span><span class="kw">getrois</span>()
+rois &lt;-<span class="st"> </span><span class="kw">get_rois</span>()
 
 <span class="kw">head</span>(rois)
 <span class="co">#&gt;                    roi_name             site      lat       lon roitype</span>
 <span class="co">#&gt; 1:   alligatorriver_DB_1000   alligatorriver 35.78790 -75.90380      DB</span>
 <span class="co">#&gt; 2:      arbutuslake_DB_1000      arbutuslake 43.98207 -74.23322      DB</span>
 <span class="co">#&gt; 3: arbutuslakeinlet_DB_1000 arbutuslakeinlet 43.99336 -74.24527      DB</span>
-<span class="co">#&gt; 4:     archboldavir_AG_1000     archboldavir 27.17606 -81.21958      AG</span>
-<span class="co">#&gt; 5:    archboldavirx_AG_1000    archboldavirx 27.16663 -81.21983      AG</span>
-<span class="co">#&gt; 6:    archboldbahia_AG_1000    archboldbahia 27.16560 -81.21611      AG</span>
+<span class="co">#&gt; 4: arbutuslakeinlet_EN_1000 arbutuslakeinlet 43.99336 -74.24527      EN</span>
+<span class="co">#&gt; 5: arbutuslakeinlet_EN_2000 arbutuslakeinlet 43.99336 -74.24527      EN</span>
+<span class="co">#&gt; 6:     archboldavir_AG_1000     archboldavir 27.17606 -81.21958      AG</span>
 <span class="co">#&gt;    sequence_number                                      description</span>
 <span class="co">#&gt; 1:            1000                                  canopy level DB</span>
 <span class="co">#&gt; 2:            1000                                  canopy level DB</span>
 <span class="co">#&gt; 3:            1000 canopy level DB (only a small part of FOV is DB)</span>
-<span class="co">#&gt; 4:            1000                                 entire AG in FOV</span>
-<span class="co">#&gt; 5:            1000                            entire AG land in FOV</span>
-<span class="co">#&gt; 6:            1000                               entire land in FOV</span>
+<span class="co">#&gt; 4:            1000                           canopy level evergreen</span>
+<span class="co">#&gt; 5:            2000              canopy level evergreen - AWB change</span>
+<span class="co">#&gt; 6:            1000                                 entire AG in FOV</span>
 <span class="co">#&gt;    first_date  last_date site_years missing_data_pct</span>
 <span class="co">#&gt; 1: 2012-05-04 2018-10-11        6.1              5.0</span>
 <span class="co">#&gt; 2: 2008-06-12 2014-08-24        5.4             13.0</span>
-<span class="co">#&gt; 3: 2015-08-18 2018-10-14        2.4             25.0</span>
-<span class="co">#&gt; 4: 2016-11-18 2018-10-14        1.7             12.0</span>
-<span class="co">#&gt; 5: 2016-05-16 2018-10-14        2.2              9.0</span>
-<span class="co">#&gt; 6: 2017-03-21 2018-10-14        1.5              3.0</span>
+<span class="co">#&gt; 3: 2015-08-18 2018-10-29        2.4             25.0</span>
+<span class="co">#&gt; 4: 2015-08-18 2017-12-07        1.9             17.0</span>
+<span class="co">#&gt; 5: 2018-05-23 2018-10-29        0.4             11.0</span>
+<span class="co">#&gt; 6: 2016-11-18 2018-10-29        1.7             12.0</span>
 <span class="co">#&gt;                                                                                       roi_page</span>
 <span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000.html</span>
 <span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000.html</span>
 <span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000.html</span>
-<span class="co">#&gt; 4:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000.html</span>
-<span class="co">#&gt; 5:       https://phenocam.sr.unh.edu/data/archive/archboldavirx/ROI/archboldavirx_AG_1000.html</span>
-<span class="co">#&gt; 6:       https://phenocam.sr.unh.edu/data/archive/archboldbahia/ROI/archboldbahia_AG_1000.html</span>
+<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000.html</span>
+<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000.html</span>
+<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000.html</span>
 <span class="co">#&gt;                                                                                         roi_stats_file</span>
 <span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_roistats.csv</span>
 <span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_roistats.csv</span>
 <span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_roistats.csv</span>
-<span class="co">#&gt; 4:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_roistats.csv</span>
-<span class="co">#&gt; 5:       https://phenocam.sr.unh.edu/data/archive/archboldavirx/ROI/archboldavirx_AG_1000_roistats.csv</span>
-<span class="co">#&gt; 6:       https://phenocam.sr.unh.edu/data/archive/archboldbahia/ROI/archboldbahia_AG_1000_roistats.csv</span>
+<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_roistats.csv</span>
+<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_roistats.csv</span>
+<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_roistats.csv</span>
 <span class="co">#&gt;                                                                                    one_day_summary</span>
 <span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_1day.csv</span>
 <span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_1day.csv</span>
 <span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_1day.csv</span>
-<span class="co">#&gt; 4:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_1day.csv</span>
-<span class="co">#&gt; 5:       https://phenocam.sr.unh.edu/data/archive/archboldavirx/ROI/archboldavirx_AG_1000_1day.csv</span>
-<span class="co">#&gt; 6:       https://phenocam.sr.unh.edu/data/archive/archboldbahia/ROI/archboldbahia_AG_1000_1day.csv</span>
+<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_1day.csv</span>
+<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_1day.csv</span>
+<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_1day.csv</span>
 <span class="co">#&gt;                                                                                  three_day_summary</span>
 <span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_3day.csv</span>
 <span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_3day.csv</span>
 <span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_3day.csv</span>
-<span class="co">#&gt; 4:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_3day.csv</span>
-<span class="co">#&gt; 5:       https://phenocam.sr.unh.edu/data/archive/archboldavirx/ROI/archboldavirx_AG_1000_3day.csv</span>
-<span class="co">#&gt; 6:       https://phenocam.sr.unh.edu/data/archive/archboldbahia/ROI/archboldbahia_AG_1000_3day.csv</span>
+<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_3day.csv</span>
+<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_3day.csv</span>
+<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_3day.csv</span>
 <span class="co">#&gt;    data_release</span>
 <span class="co">#&gt; 1:          pre</span>
 <span class="co">#&gt; 2:          pre</span>
@@ -233,7 +233,7 @@ rois &lt;-<span class="st"> </span><span class="kw">getrois</span>()
 <p>The <code>getphenoTS()</code> function can download a time-series and return the result as a <code>data.table</code>. For example, to obtain the time-series for <a href="https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html">DB_1000</a> from the <strong><em>dukehw</em></strong> PhenoCam site:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 <span class="co"># to obtain the DB 1000  from dukehw</span>
-dukehw_DB_<span class="dv">1000</span> &lt;-<span class="st"> </span><span class="kw">getphenoTS</span>(<span class="dt">site =</span> <span class="st">'dukehw'</span>, <span class="dt">vegType =</span> <span class="st">'DB'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>, <span class="dt">type =</span> <span class="st">'3day'</span>)
+dukehw_DB_<span class="dv">1000</span> &lt;-<span class="st"> </span><span class="kw">get_pheno_ts</span>(<span class="dt">site =</span> <span class="st">'dukehw'</span>, <span class="dt">vegType =</span> <span class="st">'DB'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>, <span class="dt">type =</span> <span class="st">'3day'</span>)
 
 <span class="kw">head</span>(dukehw_DB_<span class="dv">1000</span>)
 <span class="co">#&gt;          date year doy image_count              midday_filename midday_r</span>
@@ -280,14 +280,12 @@ dukehw_DB_<span class="dv">1000</span> &lt;-<span class="st"> </span><span class
 <span class="co">#&gt; 6:                 NA 2013 167 2013-06-16</span>
 
 dukehw_DB_<span class="dv">1000</span>[,date<span class="op">:</span><span class="er">=</span><span class="kw">as.Date</span>(date)]
-dukehw_DB_<span class="dv">1000</span>[,<span class="kw">plot</span>(date, gcc_<span class="dv">90</span>)]</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
-<pre><code>#&gt; NULL</code></pre>
+<span class="co"># dukehw_DB_1000[,plot(date, gcc_90)]</span></code></pre></div>
 </div>
 <div id="merge-with-other-time-series-such-as-flux-data" class="section level2">
 <h2>Merge with other time-series such as flux data</h2>
 <p>In a fully programmatic settings you can load the PhenoCam dataset, find the related flux data, load the flux data and merge everything together as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phenots &lt;-<span class="st"> </span><span class="kw">getphenoTS</span>(<span class="dt">site =</span> <span class="st">'oregonMP'</span>, <span class="dt">vegType =</span> <span class="st">'EN'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phenots &lt;-<span class="st"> </span><span class="kw">get_pheno_ts</span>(<span class="dt">site =</span> <span class="st">'oregonMP'</span>, <span class="dt">vegType =</span> <span class="st">'EN'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>)
 
 <span class="kw">head</span>(phenots)
 <span class="co">#&gt;          date year doy image_count                midday_filename midday_r</span>
@@ -333,7 +331,7 @@ dukehw_DB_<span class="dv">1000</span>[,<span class="kw">plot</span>(date, gcc_<
 <span class="co">#&gt; 5:                 NA 2011 179 2011-06-28</span>
 <span class="co">#&gt; 6:                 NA 2011 182 2011-07-01</span>
 
-fluxfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">'fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv'</span>, <span class="dt">package =</span> <span class="st">'phenocam'</span>)
+fluxfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">'fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv'</span>, <span class="dt">package =</span> <span class="st">'phenocamapi'</span>)
 
 fluxts &lt;-<span class="st"> </span><span class="kw">read.csv</span>(fluxfile, <span class="dt">skip =</span> <span class="dv">0</span>)
 fluxts[fluxts<span class="op">==-</span><span class="dv">9999</span>] &lt;-<span class="st"> </span><span class="ot">NA</span>

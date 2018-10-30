@@ -6,10 +6,10 @@ knitr::opts_chunk$set(
 
 ## ------------------------------------------------------------------------
 library(data.table)
-library(phenocam)
+library(phenocamapi)
 
 # obtaining the metadata as data.table
-phenos <- getphenos()
+phenos <- get_phenos()
 
 head(phenos)
 
@@ -23,27 +23,27 @@ head(DB.flux)
 
 ## ------------------------------------------------------------------------
 # obtaining the list of all the available ROI's on the PhenoCam server
-rois <- getrois()
+rois <- get_rois()
 
 head(rois)
 
 ## ------------------------------------------------------------------------
 
 # to obtain the DB 1000  from dukehw
-dukehw_DB_1000 <- getphenoTS(site = 'dukehw', vegType = 'DB', roiID = 1000, type = '3day')
+dukehw_DB_1000 <- get_pheno_ts(site = 'dukehw', vegType = 'DB', roiID = 1000, type = '3day')
 
 head(dukehw_DB_1000)
 
 dukehw_DB_1000[,date:=as.Date(date)]
-dukehw_DB_1000[,plot(date, gcc_90)]
+# dukehw_DB_1000[,plot(date, gcc_90)]
 
 
 ## ------------------------------------------------------------------------
-phenots <- getphenoTS(site = 'oregonMP', vegType = 'EN', roiID = 1000)
+phenots <- get_pheno_ts(site = 'oregonMP', vegType = 'EN', roiID = 1000)
 
 head(phenots)
 
-fluxfile <- system.file('fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv', package = 'phenocam')
+fluxfile <- system.file('fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv', package = 'phenocamapi')
 
 fluxts <- read.csv(fluxfile, skip = 0)
 fluxts[fluxts==-9999] <- NA
