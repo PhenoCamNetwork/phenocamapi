@@ -1,15 +1,15 @@
 #' Full list of PhenoCam ROI's and metadata
 #'
 #' @return a data.table with a list of all the PhenoCam ROI's and their metadata
-#' @import data.table
+#' @importFrom data.table data.table as.data.table
 #' @import rjson
 #' @export
 #' @examples
 #'
-#' rois <- getrois()
+#' rois <- get_rois()
 #' head(rois)
 #'
-getrois <- function(){
+get_rois <- function(){
   # getting the metadata from the phenocam
   rois <- fromJSON(file = 'https://phenocam.sr.unh.edu/api/roilists/?limit=10000')$results
 

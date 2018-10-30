@@ -1,15 +1,15 @@
 #' Full list of PhenoCam sites and metadata
 #'
 #' @return a data.table with a list of all the PhenoCam sites and their metadata
-#' @import data.table
+#' @importFrom data.table data.table as.data.table
 #' @import rjson
 #' @export
 #' @examples
 #'
-#' phenos <- getphenos()
+#' phenos <- get_phenos()
 #' head(phenos)
 #'
-getphenos <- function(){
+get_phenos <- function(){
   # getting the metadata from the phenocam
   phenos <- fromJSON(file = 'https://phenocam.sr.unh.edu/api/cameras/?limit=10000')$results
 

@@ -5,15 +5,15 @@
 #' @param roiID four-digit integer number indicating the ROI number
 #' @param type a character string indicating what data to be obtained, can be '1day', '3day', or 'roistats'.
 #' @return a data.table containing phenological data over time.
-#' @import data.table
+#' @importFrom data.table data.table as.data.table
 #' @import utils
 #' @export
 #' @examples
 #'
-#' ts <- getphenoTS(site = 'dukehw', vegType = 'DB', roiID = 1000)
+#' ts <- get_pheno_ts(site = 'dukehw', vegType = 'DB', roiID = 1000)
 #' head(ts)
 #'
-getphenoTS <- function(site, vegType, roiID, type = '3day'){
+get_pheno_ts <- function(site, vegType, roiID, type = '3day'){
 
   if(type%in%c('1day', '3day', 'roistats')){
     ext <- paste0('_', type, '.csv')
