@@ -1,10 +1,10 @@
 ---
-title: "PhenoCam API and Data Fusion"
+title: "Getting Started with Phenocam API"
 author: "Bijan Seyednasrollah"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{PhenoCam API and Data Fusion}
+  %\VignetteIndexEntry{Getting Started with Phenocam API}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
 
 PhenoCam time-series are extracted time-series data obtained from ROI's for a given site. 
 Each site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI's per vegetation type. 
@@ -78,26 +77,3 @@ dukehw_DB_1000[,date:=as.Date(date)]
 ```
 
 
-
-
-## Merge with other time-series such as flux data 
-In a fully programmatic settings you can load the PhenoCam dataset, find the related flux data, load the flux data and merge everything together as follows:
-
-```{r}
-phenots <- get_pheno_ts(site = 'oregonMP', vegType = 'EN', roiID = 1000)
-
-head(phenots)
-
-fluxfile <- system.file('fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv', package = 'phenocamapi')
-
-fluxts <- read.csv(fluxfile, skip = 0)
-fluxts[fluxts==-9999] <- NA
-fluxts <- as.data.table(fluxts)
-fluxts[,datetime:=as.POSIXct(as.character(TIMESTAMP), format='%Y%m%d')]
-fluxts[,YYYYMMDD:=as.character(as.Date(datetime))]
-fluxts[,YEAR:=year(datetime)]
-fluxts[,DOY:=yday(datetime)]
-
-head(fluxts[, .(TIMESTAMP, TA_F)])
-
-```

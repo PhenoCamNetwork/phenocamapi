@@ -14,7 +14,7 @@
 
 <meta name="date" content="2018-10-30" />
 
-<title>PhenoCam API and Data Fusion</title>
+<title>Getting Started with Phenocam API</title>
 
 
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">PhenoCam API and Data Fusion</h1>
+<h1 class="title toc-ignore">Getting Started with Phenocam API</h1>
 <h4 class="author"><em>Bijan Seyednasrollah</em></h4>
 <h4 class="date"><em>2018-10-30</em></h4>
 
@@ -281,74 +281,6 @@ dukehw_DB_<span class="dv">1000</span> &lt;-<span class="st"> </span><span class
 
 dukehw_DB_<span class="dv">1000</span>[,date<span class="op">:</span><span class="er">=</span><span class="kw">as.Date</span>(date)]
 <span class="co"># dukehw_DB_1000[,plot(date, gcc_90)]</span></code></pre></div>
-</div>
-<div id="merge-with-other-time-series-such-as-flux-data" class="section level2">
-<h2>Merge with other time-series such as flux data</h2>
-<p>In a fully programmatic settings you can load the PhenoCam dataset, find the related flux data, load the flux data and merge everything together as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phenots &lt;-<span class="st"> </span><span class="kw">get_pheno_ts</span>(<span class="dt">site =</span> <span class="st">'oregonMP'</span>, <span class="dt">vegType =</span> <span class="st">'EN'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>)
-
-<span class="kw">head</span>(phenots)
-<span class="co">#&gt;          date year doy image_count                midday_filename midday_r</span>
-<span class="co">#&gt; 1: 2011-06-16 2011 167          63 oregonMP_2011_06_16_120118.jpg 103.9530</span>
-<span class="co">#&gt; 2: 2011-06-19 2011 170          74 oregonMP_2011_06_19_120113.jpg 103.5935</span>
-<span class="co">#&gt; 3: 2011-06-22 2011 173          76 oregonMP_2011_06_22_120114.jpg 104.1644</span>
-<span class="co">#&gt; 4: 2011-06-25 2011 176          77 oregonMP_2011_06_25_120116.jpg 104.5720</span>
-<span class="co">#&gt; 5: 2011-06-28 2011 179          73 oregonMP_2011_06_28_120111.jpg 128.1094</span>
-<span class="co">#&gt; 6: 2011-07-01 2011 182          73 oregonMP_2011_07_01_120114.jpg 102.2098</span>
-<span class="co">#&gt;     midday_g midday_b midday_gcc midday_rcc   r_mean    r_std   g_mean</span>
-<span class="co">#&gt; 1:  86.63893 52.20004    0.35684    0.42816 124.5583 19.60591 106.0913</span>
-<span class="co">#&gt; 2:  87.31880 53.11946    0.35782    0.42451 121.7044 15.20969 105.0276</span>
-<span class="co">#&gt; 3:  88.58788 51.58992    0.36256    0.42631 124.2838 16.98360 107.4202</span>
-<span class="co">#&gt; 4:  89.02901 52.47840    0.36179    0.42495 123.8756 16.35445 106.4903</span>
-<span class="co">#&gt; 5: 111.36828 68.91034    0.36113    0.41542 123.9016 13.17907 108.4226</span>
-<span class="co">#&gt; 6:  87.51073 51.46247    0.36284    0.42379 122.7949 17.65924 107.1554</span>
-<span class="co">#&gt;       g_std   b_mean    b_std gcc_mean gcc_std  gcc_50  gcc_75  gcc_90</span>
-<span class="co">#&gt; 1: 17.10334 72.54730 21.06870  0.35150 0.01061 0.35518 0.35749 0.35856</span>
-<span class="co">#&gt; 2: 14.22768 69.54728 16.26605  0.35525 0.00751 0.35692 0.35897 0.36004</span>
-<span class="co">#&gt; 3: 15.28831 70.44228 17.72491  0.35667 0.00960 0.36016 0.36165 0.36366</span>
-<span class="co">#&gt; 4: 14.35366 69.47986 17.63958  0.35638 0.01000 0.35941 0.36205 0.36273</span>
-<span class="co">#&gt; 5: 11.41950 69.56180 12.25025  0.35953 0.00608 0.36113 0.36349 0.36608</span>
-<span class="co">#&gt; 6: 15.15896 72.02875 20.35776  0.35659 0.01186 0.36086 0.36318 0.36466</span>
-<span class="co">#&gt;    rcc_mean rcc_std  rcc_50  rcc_75  rcc_90 max_solar_elev snow_flag</span>
-<span class="co">#&gt; 1:  0.41312 0.01463 0.41542 0.42378 0.43106       68.90398        NA</span>
-<span class="co">#&gt; 2:  0.41243 0.01564 0.41474 0.42440 0.43047       68.94462        NA</span>
-<span class="co">#&gt; 3:  0.41310 0.01378 0.41453 0.42496 0.42959       68.94485        NA</span>
-<span class="co">#&gt; 4:  0.41487 0.01410 0.41772 0.42503 0.42939       68.90269        NA</span>
-<span class="co">#&gt; 5:  0.41112 0.01810 0.41478 0.42492 0.43189       68.79744        NA</span>
-<span class="co">#&gt; 6:  0.40874 0.01545 0.41236 0.42225 0.42748       68.63139        NA</span>
-<span class="co">#&gt;    outlierflag_gcc_mean outlierflag_gcc_50 outlierflag_gcc_75</span>
-<span class="co">#&gt; 1:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 2:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 3:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 4:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 5:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 6:                   NA                 NA                 NA</span>
-<span class="co">#&gt;    outlierflag_gcc_90 YEAR DOY   YYYYMMDD</span>
-<span class="co">#&gt; 1:                 NA 2011 167 2011-06-16</span>
-<span class="co">#&gt; 2:                 NA 2011 170 2011-06-19</span>
-<span class="co">#&gt; 3:                 NA 2011 173 2011-06-22</span>
-<span class="co">#&gt; 4:                 NA 2011 176 2011-06-25</span>
-<span class="co">#&gt; 5:                 NA 2011 179 2011-06-28</span>
-<span class="co">#&gt; 6:                 NA 2011 182 2011-07-01</span>
-
-fluxfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">'fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv'</span>, <span class="dt">package =</span> <span class="st">'phenocamapi'</span>)
-
-fluxts &lt;-<span class="st"> </span><span class="kw">read.csv</span>(fluxfile, <span class="dt">skip =</span> <span class="dv">0</span>)
-fluxts[fluxts<span class="op">==-</span><span class="dv">9999</span>] &lt;-<span class="st"> </span><span class="ot">NA</span>
-fluxts &lt;-<span class="st"> </span><span class="kw">as.data.table</span>(fluxts)
-fluxts[,datetime<span class="op">:</span><span class="er">=</span><span class="kw">as.POSIXct</span>(<span class="kw">as.character</span>(TIMESTAMP), <span class="dt">format=</span><span class="st">'%Y%m%d'</span>)]
-fluxts[,YYYYMMDD<span class="op">:</span><span class="er">=</span><span class="kw">as.character</span>(<span class="kw">as.Date</span>(datetime))]
-fluxts[,YEAR<span class="op">:</span><span class="er">=</span><span class="kw">year</span>(datetime)]
-fluxts[,DOY<span class="op">:</span><span class="er">=</span><span class="kw">yday</span>(datetime)]
-
-<span class="kw">head</span>(fluxts[, .(TIMESTAMP, TA_F)])
-<span class="co">#&gt;    TIMESTAMP    TA_F</span>
-<span class="co">#&gt; 1:  20141115 -10.105</span>
-<span class="co">#&gt; 2:  20141116  -8.044</span>
-<span class="co">#&gt; 3:  20141117  -4.550</span>
-<span class="co">#&gt; 4:  20141118  -1.584</span>
-<span class="co">#&gt; 5:  20141119  -1.805</span>
-<span class="co">#&gt; 6:  20141120   4.019</span></code></pre></div>
 </div>
 
 
