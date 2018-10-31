@@ -14,3 +14,4 @@ globalVariables(names = c('Year','Month', 'Day', 'Hour', 'Minute', 'Second',
 .onAttach <- function(libname, pkgname) {
   requireNamespace("data.table")
 }
+
