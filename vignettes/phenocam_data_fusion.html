@@ -12,7 +12,7 @@
 
 <meta name="author" content="Bijan Seyednasrollah" />
 
-<meta name="date" content="2018-10-30" />
+<meta name="date" content="2018-10-31" />
 
 <title>PhenoCam API and Data Fusion</title>
 
@@ -70,86 +70,26 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">PhenoCam API and Data Fusion</h1>
 <h4 class="author"><em>Bijan Seyednasrollah</em></h4>
-<h4 class="date"><em>2018-10-30</em></h4>
+<h4 class="date"><em>2018-10-31</em></h4>
 
 
 
-<p>PhenoCam time-series are extracted time-series data obtained from ROI’s for a given site. Each site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI’s per vegetation type.</p>
-<p>This R package is an effort to simplify data wrangling steps and finally merge them as a single dataframe.</p>
-<p>I begin with several examples for extracting Phenocam time-series directly from the server: - Exploring the PhenoCam metadata - Downloading Phenocam time-series data - Merging with other time-series</p>
+<p>This R package is an effort to simplify data wrangling steps including downloading site data and metadata.</p>
+<p>Each PhenoCam site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI’s per vegetation type. ‘phenocamapi’ is an interface to interact with the PhenoCam server to extract those data and process them in an R environment.</p>
+<p>I begin with several examples for extracting Phenocam data directly from the server:</p>
+<ul>
+<li>Exploring the PhenoCam metadata</li>
+<li>Downloading Phenocam time-series data</li>
+<li>Merging with other time-series</li>
+</ul>
 <div id="exploriong-the-phenocam-metadata" class="section level2">
 <h2>Exploriong the PhenoCam metadata</h2>
-<p>We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the <code>getphenos()</code> function. The returning value would be a data.table in order to simplify further data exploration.</p>
+<p>We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the <code>get_phenos()</code> function. The returning value would be a data.table in order to simplify further data exploration.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
 <span class="kw">library</span>(phenocamapi)
 
 <span class="co"># obtaining the metadata as data.table</span>
-phenos &lt;-<span class="st"> </span><span class="kw">get_phenos</span>()
-
-<span class="kw">head</span>(phenos)
-<span class="co">#&gt;              site      lat        lon elev active utc_offset date_first</span>
-<span class="co">#&gt; 1:         acadia 44.37694  -68.26083  158   TRUE         -5 2007-03-15</span>
-<span class="co">#&gt; 2:  aguatibiaeast 33.62200 -116.86700 1086   TRUE         -8 2007-08-16</span>
-<span class="co">#&gt; 3: aguatibianorth 33.60222 -117.34368 1090  FALSE         -8 2003-10-01</span>
-<span class="co">#&gt; 4:       ahwahnee 37.74670 -119.58160 1199   TRUE         -8 2008-08-28</span>
-<span class="co">#&gt; 5:      alleypond 40.74284  -73.74304   61  FALSE         -5 2014-11-05</span>
-<span class="co">#&gt; 6: alligatorriver 35.78790  -75.90380    1   TRUE         -5 2012-05-03</span>
-<span class="co">#&gt;     date_last                                             site_description</span>
-<span class="co">#&gt; 1: 2018-10-29 Acadia National Park, McFarland Hill, near Bar Harbor, Maine</span>
-<span class="co">#&gt; 2: 2018-10-29                            Agua Tibia Wilderness, California</span>
-<span class="co">#&gt; 3: 2006-10-25                            Agua Tibia Wilderness, California</span>
-<span class="co">#&gt; 4: 2018-10-29          Ahwahnee Meadow, Yosemite National Park, California</span>
-<span class="co">#&gt; 5: 2015-10-13                                 Alley Pond, Queens, New York</span>
-<span class="co">#&gt; 6: 2018-10-10     Alligator River National Wildlife Refuge, North Carolina</span>
-<span class="co">#&gt;    camera_description camera_orientation flux_data flux_networks</span>
-<span class="co">#&gt; 1:            unknown                 NE     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 2:            unknown                 SW     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 3:            unknown                 NE     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 4:            unknown                  E     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 5:  StarDot NetCam SC                  S     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 6:  StarDot NetCam SC                  N      TRUE        &lt;list&gt;</span>
-<span class="co">#&gt;    flux_sitenames</span>
-<span class="co">#&gt; 1:               </span>
-<span class="co">#&gt; 2:               </span>
-<span class="co">#&gt; 3:               </span>
-<span class="co">#&gt; 4:               </span>
-<span class="co">#&gt; 5:               </span>
-<span class="co">#&gt; 6:         US-NC4</span>
-<span class="co">#&gt;                                                    dominant_species</span>
-<span class="co">#&gt; 1:                                                                 </span>
-<span class="co">#&gt; 2:                                                                 </span>
-<span class="co">#&gt; 3:                                                                 </span>
-<span class="co">#&gt; 4:                                                                 </span>
-<span class="co">#&gt; 5:                                                                 </span>
-<span class="co">#&gt; 6: Nyssa sylvatica, Taxodium distichum, Nyssa aquatica, Acer rubrum</span>
-<span class="co">#&gt;    primary_veg_type secondary_veg_type site_meteorology MAT_site MAP_site</span>
-<span class="co">#&gt; 1:               DB                 EN            FALSE       NA       NA</span>
-<span class="co">#&gt; 2:               SH                               FALSE       NA       NA</span>
-<span class="co">#&gt; 3:               SH                               FALSE       NA       NA</span>
-<span class="co">#&gt; 4:               EN                 GR            FALSE       NA       NA</span>
-<span class="co">#&gt; 5:               DB                               FALSE       NA       NA</span>
-<span class="co">#&gt; 6:               DB                 WL             TRUE     16.6     1310</span>
-<span class="co">#&gt;    MAT_daymet MAP_daymet MAT_worldclim MAP_worldclim koeppen_geiger</span>
-<span class="co">#&gt; 1:       7.05       1439           6.5          1303            Dfb</span>
-<span class="co">#&gt; 2:      15.75        483          14.9           504            Csa</span>
-<span class="co">#&gt; 3:      16.00        489          13.8           729            Csa</span>
-<span class="co">#&gt; 4:      12.25        871          11.8           886            Csb</span>
-<span class="co">#&gt; 5:      11.90       1263          11.7          1109            Cfa</span>
-<span class="co">#&gt; 6:      16.75       1371          16.4          1312            Cfa</span>
-<span class="co">#&gt;    ecoregion landcover_igbp flux_networks_name        flux_networks_url</span>
-<span class="co">#&gt; 1:         8              5               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 2:        11              7               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 3:        11              7               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 4:         6              8               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 5:         8             13               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 6:         8              5          AMERIFLUX http://ameriflux.lbl.gov</span>
-<span class="co">#&gt;    flux_networks_description</span>
-<span class="co">#&gt; 1:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 2:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 3:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 4:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 5:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 6:         AmeriFlux Network</span></code></pre></div>
+phenos &lt;-<span class="st"> </span><span class="kw">get_phenos</span>()</code></pre></div>
 <p>or we can just list the sites with flux data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phenofluxsites &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span><span class="ot">TRUE</span><span class="op">&amp;!</span><span class="kw">is.na</span>(flux_sitenames), .(<span class="dt">PhenoCam=</span>site, <span class="dt">Flux=</span>flux_sitenames)]
 <span class="kw">head</span>(phenofluxsites)
@@ -162,122 +102,40 @@ phenos &lt;-<span class="st"> </span><span class="kw">get_phenos</span>()
 <span class="co">#&gt; 6:           austincary US-SP1</span>
 
 <span class="co">#list deciduous broadleaf sites with flux tower</span>
-DB.flux &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span><span class="ot">TRUE</span><span class="op">&amp;</span>primary_veg_type<span class="op">==</span><span class="st">'DB'</span>, site]
-<span class="kw">head</span>(DB.flux)
-<span class="co">#&gt; [1] &quot;alligatorriver&quot; &quot;bartlett&quot;       &quot;bartlettir&quot;     &quot;bbc3&quot;          </span>
-<span class="co">#&gt; [5] &quot;bbc4&quot;           &quot;bbc7&quot;</span></code></pre></div>
+DB.flux &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span><span class="ot">TRUE</span><span class="op">&amp;</span>primary_veg_type<span class="op">==</span><span class="st">'DB'</span>, site]</code></pre></div>
 </div>
 <div id="downloading-phenocam-timeseries-data" class="section level2">
 <h2>Downloading Phenocam timeseries data</h2>
+<p>PhenoCam time-series are extracted time-series data obtained from ROI’s for a given site.</p>
 <p>To download the phenological time-series from the PhenoCam, we need to know the sitename, vegetation type and ROI ID. This information can be obtained from the <a href="https://phenocam.sr.unh.edu/webcam/">PhenoCam website</a> or using the <code>getrois()</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># obtaining the list of all the available ROI's on the PhenoCam server</span>
 rois &lt;-<span class="st"> </span><span class="kw">get_rois</span>()
 
-<span class="kw">head</span>(rois)
-<span class="co">#&gt;                    roi_name             site      lat       lon roitype</span>
-<span class="co">#&gt; 1:   alligatorriver_DB_1000   alligatorriver 35.78790 -75.90380      DB</span>
-<span class="co">#&gt; 2:      arbutuslake_DB_1000      arbutuslake 43.98207 -74.23322      DB</span>
-<span class="co">#&gt; 3: arbutuslakeinlet_DB_1000 arbutuslakeinlet 43.99336 -74.24527      DB</span>
-<span class="co">#&gt; 4: arbutuslakeinlet_EN_1000 arbutuslakeinlet 43.99336 -74.24527      EN</span>
-<span class="co">#&gt; 5: arbutuslakeinlet_EN_2000 arbutuslakeinlet 43.99336 -74.24527      EN</span>
-<span class="co">#&gt; 6:     archboldavir_AG_1000     archboldavir 27.17606 -81.21958      AG</span>
-<span class="co">#&gt;    sequence_number                                      description</span>
-<span class="co">#&gt; 1:            1000                                  canopy level DB</span>
-<span class="co">#&gt; 2:            1000                                  canopy level DB</span>
-<span class="co">#&gt; 3:            1000 canopy level DB (only a small part of FOV is DB)</span>
-<span class="co">#&gt; 4:            1000                           canopy level evergreen</span>
-<span class="co">#&gt; 5:            2000              canopy level evergreen - AWB change</span>
-<span class="co">#&gt; 6:            1000                                 entire AG in FOV</span>
-<span class="co">#&gt;    first_date  last_date site_years missing_data_pct</span>
-<span class="co">#&gt; 1: 2012-05-04 2018-10-11        6.1              5.0</span>
-<span class="co">#&gt; 2: 2008-06-12 2014-08-24        5.4             13.0</span>
-<span class="co">#&gt; 3: 2015-08-18 2018-10-29        2.4             25.0</span>
-<span class="co">#&gt; 4: 2015-08-18 2017-12-07        1.9             17.0</span>
-<span class="co">#&gt; 5: 2018-05-23 2018-10-29        0.4             11.0</span>
-<span class="co">#&gt; 6: 2016-11-18 2018-10-29        1.7             12.0</span>
-<span class="co">#&gt;                                                                                       roi_page</span>
-<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000.html</span>
-<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000.html</span>
-<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000.html</span>
-<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000.html</span>
-<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000.html</span>
-<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000.html</span>
-<span class="co">#&gt;                                                                                         roi_stats_file</span>
-<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_roistats.csv</span>
-<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_roistats.csv</span>
-<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_roistats.csv</span>
-<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_roistats.csv</span>
-<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_roistats.csv</span>
-<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_roistats.csv</span>
-<span class="co">#&gt;                                                                                    one_day_summary</span>
-<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_1day.csv</span>
-<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_1day.csv</span>
-<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_1day.csv</span>
-<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_1day.csv</span>
-<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_1day.csv</span>
-<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_1day.csv</span>
-<span class="co">#&gt;                                                                                  three_day_summary</span>
-<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_3day.csv</span>
-<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_3day.csv</span>
-<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_3day.csv</span>
-<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_3day.csv</span>
-<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_3day.csv</span>
-<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_3day.csv</span>
-<span class="co">#&gt;    data_release</span>
-<span class="co">#&gt; 1:          pre</span>
-<span class="co">#&gt; 2:          pre</span>
-<span class="co">#&gt; 3:          pre</span>
-<span class="co">#&gt; 4:          pre</span>
-<span class="co">#&gt; 5:          pre</span>
-<span class="co">#&gt; 6:          pre</span></code></pre></div>
+<span class="kw">colnames</span>(rois)
+<span class="co">#&gt;  [1] &quot;roi_name&quot;          &quot;site&quot;              &quot;lat&quot;              </span>
+<span class="co">#&gt;  [4] &quot;lon&quot;               &quot;roitype&quot;           &quot;sequence_number&quot;  </span>
+<span class="co">#&gt;  [7] &quot;description&quot;       &quot;first_date&quot;        &quot;last_date&quot;        </span>
+<span class="co">#&gt; [10] &quot;site_years&quot;        &quot;missing_data_pct&quot;  &quot;roi_page&quot;         </span>
+<span class="co">#&gt; [13] &quot;roi_stats_file&quot;    &quot;one_day_summary&quot;   &quot;three_day_summary&quot;</span>
+<span class="co">#&gt; [16] &quot;data_release&quot;</span></code></pre></div>
 <p>The <code>getphenoTS()</code> function can download a time-series and return the result as a <code>data.table</code>. For example, to obtain the time-series for <a href="https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html">DB_1000</a> from the <strong><em>dukehw</em></strong> PhenoCam site:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 <span class="co"># to obtain the DB 1000  from dukehw</span>
 dukehw_DB_<span class="dv">1000</span> &lt;-<span class="st"> </span><span class="kw">get_pheno_ts</span>(<span class="dt">site =</span> <span class="st">'dukehw'</span>, <span class="dt">vegType =</span> <span class="st">'DB'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>, <span class="dt">type =</span> <span class="st">'3day'</span>)
 
-<span class="kw">head</span>(dukehw_DB_<span class="dv">1000</span>)
-<span class="co">#&gt;          date year doy image_count              midday_filename midday_r</span>
-<span class="co">#&gt; 1: 2013-06-01 2013 152          57 dukehw_2013_06_01_120111.jpg 91.27133</span>
-<span class="co">#&gt; 2: 2013-06-04 2013 155          76 dukehw_2013_06_04_120119.jpg 76.39418</span>
-<span class="co">#&gt; 3: 2013-06-07 2013 158          77 dukehw_2013_06_07_120112.jpg 60.59138</span>
-<span class="co">#&gt; 4: 2013-06-10 2013 161          77 dukehw_2013_06_10_120108.jpg 76.47824</span>
-<span class="co">#&gt; 5: 2013-06-13 2013 164          77 dukehw_2013_06_13_120112.jpg 88.94067</span>
-<span class="co">#&gt; 6: 2013-06-16 2013 167          78 dukehw_2013_06_16_120110.jpg 88.74154</span>
-<span class="co">#&gt;    midday_g midday_b midday_gcc midday_rcc   r_mean   r_std   g_mean</span>
-<span class="co">#&gt; 1: 97.91501 47.39231    0.41388    0.38580 87.64029 5.90415 92.13308</span>
-<span class="co">#&gt; 2: 84.97283 33.55237    0.43594    0.39193 79.86220 6.00115 86.92451</span>
-<span class="co">#&gt; 3: 73.15058 35.59088    0.43199    0.35782 72.73630 9.49633 83.97068</span>
-<span class="co">#&gt; 4: 82.20226 37.08507    0.41990    0.39066 80.88500 8.23146 87.96595</span>
-<span class="co">#&gt; 5: 95.72012 51.37524    0.40553    0.37681 83.75471 5.89276 89.72717</span>
-<span class="co">#&gt; 6: 95.07550 48.90862    0.40853    0.38131 84.05656 5.87811 89.00122</span>
-<span class="co">#&gt;      g_std   b_mean   b_std gcc_mean gcc_std  gcc_50  gcc_75  gcc_90</span>
-<span class="co">#&gt; 1: 6.34444 46.09969 4.47645  0.40792 0.00859 0.40781 0.41395 0.41683</span>
-<span class="co">#&gt; 2: 5.26335 37.98788 3.41685  0.42465 0.00890 0.42739 0.43087 0.43443</span>
-<span class="co">#&gt; 3: 7.71469 39.55555 5.28922  0.42865 0.01318 0.43110 0.43513 0.43984</span>
-<span class="co">#&gt; 4: 7.77292 43.06439 4.72808  0.41530 0.01243 0.41633 0.42366 0.42811</span>
-<span class="co">#&gt; 5: 6.47203 46.72175 4.01465  0.40744 0.01072 0.40740 0.41517 0.42083</span>
-<span class="co">#&gt; 6: 5.17788 44.64391 4.28153  0.40900 0.00895 0.40990 0.41598 0.41989</span>
-<span class="co">#&gt;    rcc_mean rcc_std  rcc_50  rcc_75  rcc_90 max_solar_elev snow_flag</span>
-<span class="co">#&gt; 1:  0.38819 0.01176 0.38689 0.39121 0.39690       75.99634        NA</span>
-<span class="co">#&gt; 2:  0.38981 0.01032 0.39138 0.39622 0.39948       76.31210        NA</span>
-<span class="co">#&gt; 3:  0.36977 0.01326 0.37280 0.37796 0.38168       76.56521        NA</span>
-<span class="co">#&gt; 4:  0.38138 0.00881 0.38283 0.38841 0.39132       76.75881        NA</span>
-<span class="co">#&gt; 5:  0.38040 0.00995 0.38163 0.38531 0.38861       76.94218        NA</span>
-<span class="co">#&gt; 6:  0.38609 0.01249 0.38678 0.39303 0.39833       77.07864        NA</span>
-<span class="co">#&gt;    outlierflag_gcc_mean outlierflag_gcc_50 outlierflag_gcc_75</span>
-<span class="co">#&gt; 1:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 2:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 3:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 4:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 5:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 6:                   NA                 NA                 NA</span>
-<span class="co">#&gt;    outlierflag_gcc_90 YEAR DOY   YYYYMMDD</span>
-<span class="co">#&gt; 1:                 NA 2013 152 2013-06-01</span>
-<span class="co">#&gt; 2:                 NA 2013 155 2013-06-04</span>
-<span class="co">#&gt; 3:                 NA 2013 158 2013-06-07</span>
-<span class="co">#&gt; 4:                 NA 2013 161 2013-06-10</span>
-<span class="co">#&gt; 5:                 NA 2013 164 2013-06-13</span>
-<span class="co">#&gt; 6:                 NA 2013 167 2013-06-16</span>
+<span class="kw">colnames</span>(dukehw_DB_<span class="dv">1000</span>)
+<span class="co">#&gt;  [1] &quot;date&quot;                 &quot;year&quot;                 &quot;doy&quot;                 </span>
+<span class="co">#&gt;  [4] &quot;image_count&quot;          &quot;midday_filename&quot;      &quot;midday_r&quot;            </span>
+<span class="co">#&gt;  [7] &quot;midday_g&quot;             &quot;midday_b&quot;             &quot;midday_gcc&quot;          </span>
+<span class="co">#&gt; [10] &quot;midday_rcc&quot;           &quot;r_mean&quot;               &quot;r_std&quot;               </span>
+<span class="co">#&gt; [13] &quot;g_mean&quot;               &quot;g_std&quot;                &quot;b_mean&quot;              </span>
+<span class="co">#&gt; [16] &quot;b_std&quot;                &quot;gcc_mean&quot;             &quot;gcc_std&quot;             </span>
+<span class="co">#&gt; [19] &quot;gcc_50&quot;               &quot;gcc_75&quot;               &quot;gcc_90&quot;              </span>
+<span class="co">#&gt; [22] &quot;rcc_mean&quot;             &quot;rcc_std&quot;              &quot;rcc_50&quot;              </span>
+<span class="co">#&gt; [25] &quot;rcc_75&quot;               &quot;rcc_90&quot;               &quot;max_solar_elev&quot;      </span>
+<span class="co">#&gt; [28] &quot;snow_flag&quot;            &quot;outlierflag_gcc_mean&quot; &quot;outlierflag_gcc_50&quot;  </span>
+<span class="co">#&gt; [31] &quot;outlierflag_gcc_75&quot;   &quot;outlierflag_gcc_90&quot;   &quot;YEAR&quot;                </span>
+<span class="co">#&gt; [34] &quot;DOY&quot;                  &quot;YYYYMMDD&quot;</span>
 
 dukehw_DB_<span class="dv">1000</span>[,date<span class="op">:</span><span class="er">=</span><span class="kw">as.Date</span>(date)]
 <span class="co"># dukehw_DB_1000[,plot(date, gcc_90)]</span></code></pre></div>
@@ -287,49 +145,19 @@ dukehw_DB_<span class="dv">1000</span>[,date<span class="op">:</span><span class
 <p>In a fully programmatic settings you can load the PhenoCam dataset, find the related flux data, load the flux data and merge everything together as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phenots &lt;-<span class="st"> </span><span class="kw">get_pheno_ts</span>(<span class="dt">site =</span> <span class="st">'oregonMP'</span>, <span class="dt">vegType =</span> <span class="st">'EN'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>)
 
-<span class="kw">head</span>(phenots)
-<span class="co">#&gt;          date year doy image_count                midday_filename midday_r</span>
-<span class="co">#&gt; 1: 2011-06-16 2011 167          63 oregonMP_2011_06_16_120118.jpg 103.9530</span>
-<span class="co">#&gt; 2: 2011-06-19 2011 170          74 oregonMP_2011_06_19_120113.jpg 103.5935</span>
-<span class="co">#&gt; 3: 2011-06-22 2011 173          76 oregonMP_2011_06_22_120114.jpg 104.1644</span>
-<span class="co">#&gt; 4: 2011-06-25 2011 176          77 oregonMP_2011_06_25_120116.jpg 104.5720</span>
-<span class="co">#&gt; 5: 2011-06-28 2011 179          73 oregonMP_2011_06_28_120111.jpg 128.1094</span>
-<span class="co">#&gt; 6: 2011-07-01 2011 182          73 oregonMP_2011_07_01_120114.jpg 102.2098</span>
-<span class="co">#&gt;     midday_g midday_b midday_gcc midday_rcc   r_mean    r_std   g_mean</span>
-<span class="co">#&gt; 1:  86.63893 52.20004    0.35684    0.42816 124.5583 19.60591 106.0913</span>
-<span class="co">#&gt; 2:  87.31880 53.11946    0.35782    0.42451 121.7044 15.20969 105.0276</span>
-<span class="co">#&gt; 3:  88.58788 51.58992    0.36256    0.42631 124.2838 16.98360 107.4202</span>
-<span class="co">#&gt; 4:  89.02901 52.47840    0.36179    0.42495 123.8756 16.35445 106.4903</span>
-<span class="co">#&gt; 5: 111.36828 68.91034    0.36113    0.41542 123.9016 13.17907 108.4226</span>
-<span class="co">#&gt; 6:  87.51073 51.46247    0.36284    0.42379 122.7949 17.65924 107.1554</span>
-<span class="co">#&gt;       g_std   b_mean    b_std gcc_mean gcc_std  gcc_50  gcc_75  gcc_90</span>
-<span class="co">#&gt; 1: 17.10334 72.54730 21.06870  0.35150 0.01061 0.35518 0.35749 0.35856</span>
-<span class="co">#&gt; 2: 14.22768 69.54728 16.26605  0.35525 0.00751 0.35692 0.35897 0.36004</span>
-<span class="co">#&gt; 3: 15.28831 70.44228 17.72491  0.35667 0.00960 0.36016 0.36165 0.36366</span>
-<span class="co">#&gt; 4: 14.35366 69.47986 17.63958  0.35638 0.01000 0.35941 0.36205 0.36273</span>
-<span class="co">#&gt; 5: 11.41950 69.56180 12.25025  0.35953 0.00608 0.36113 0.36349 0.36608</span>
-<span class="co">#&gt; 6: 15.15896 72.02875 20.35776  0.35659 0.01186 0.36086 0.36318 0.36466</span>
-<span class="co">#&gt;    rcc_mean rcc_std  rcc_50  rcc_75  rcc_90 max_solar_elev snow_flag</span>
-<span class="co">#&gt; 1:  0.41312 0.01463 0.41542 0.42378 0.43106       68.90398        NA</span>
-<span class="co">#&gt; 2:  0.41243 0.01564 0.41474 0.42440 0.43047       68.94462        NA</span>
-<span class="co">#&gt; 3:  0.41310 0.01378 0.41453 0.42496 0.42959       68.94485        NA</span>
-<span class="co">#&gt; 4:  0.41487 0.01410 0.41772 0.42503 0.42939       68.90269        NA</span>
-<span class="co">#&gt; 5:  0.41112 0.01810 0.41478 0.42492 0.43189       68.79744        NA</span>
-<span class="co">#&gt; 6:  0.40874 0.01545 0.41236 0.42225 0.42748       68.63139        NA</span>
-<span class="co">#&gt;    outlierflag_gcc_mean outlierflag_gcc_50 outlierflag_gcc_75</span>
-<span class="co">#&gt; 1:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 2:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 3:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 4:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 5:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 6:                   NA                 NA                 NA</span>
-<span class="co">#&gt;    outlierflag_gcc_90 YEAR DOY   YYYYMMDD</span>
-<span class="co">#&gt; 1:                 NA 2011 167 2011-06-16</span>
-<span class="co">#&gt; 2:                 NA 2011 170 2011-06-19</span>
-<span class="co">#&gt; 3:                 NA 2011 173 2011-06-22</span>
-<span class="co">#&gt; 4:                 NA 2011 176 2011-06-25</span>
-<span class="co">#&gt; 5:                 NA 2011 179 2011-06-28</span>
-<span class="co">#&gt; 6:                 NA 2011 182 2011-07-01</span>
+<span class="kw">colnames</span>(phenots)
+<span class="co">#&gt;  [1] &quot;date&quot;                 &quot;year&quot;                 &quot;doy&quot;                 </span>
+<span class="co">#&gt;  [4] &quot;image_count&quot;          &quot;midday_filename&quot;      &quot;midday_r&quot;            </span>
+<span class="co">#&gt;  [7] &quot;midday_g&quot;             &quot;midday_b&quot;             &quot;midday_gcc&quot;          </span>
+<span class="co">#&gt; [10] &quot;midday_rcc&quot;           &quot;r_mean&quot;               &quot;r_std&quot;               </span>
+<span class="co">#&gt; [13] &quot;g_mean&quot;               &quot;g_std&quot;                &quot;b_mean&quot;              </span>
+<span class="co">#&gt; [16] &quot;b_std&quot;                &quot;gcc_mean&quot;             &quot;gcc_std&quot;             </span>
+<span class="co">#&gt; [19] &quot;gcc_50&quot;               &quot;gcc_75&quot;               &quot;gcc_90&quot;              </span>
+<span class="co">#&gt; [22] &quot;rcc_mean&quot;             &quot;rcc_std&quot;              &quot;rcc_50&quot;              </span>
+<span class="co">#&gt; [25] &quot;rcc_75&quot;               &quot;rcc_90&quot;               &quot;max_solar_elev&quot;      </span>
+<span class="co">#&gt; [28] &quot;snow_flag&quot;            &quot;outlierflag_gcc_mean&quot; &quot;outlierflag_gcc_50&quot;  </span>
+<span class="co">#&gt; [31] &quot;outlierflag_gcc_75&quot;   &quot;outlierflag_gcc_90&quot;   &quot;YEAR&quot;                </span>
+<span class="co">#&gt; [34] &quot;DOY&quot;                  &quot;YYYYMMDD&quot;</span>
 
 fluxfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">'fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv'</span>, <span class="dt">package =</span> <span class="st">'phenocamapi'</span>)
 

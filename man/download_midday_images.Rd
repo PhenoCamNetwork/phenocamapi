@@ -4,7 +4,7 @@
 \alias{download_midday_images}
 \title{Downloading the midday images for PhenoCam sites given a time range}
 \usage{
-download_midday_images(site, y = year(Sys.Date()), months = 1:12,
+download_midday_images(site, y = year(Sys.Date()), months = 1, days = 1,
   download_dir)
 }
 \arguments{
@@ -13,6 +13,8 @@ download_midday_images(site, y = year(Sys.Date()), months = 1:12,
 \item{y}{integer numeric, the year for which midday images are downloaded}
 
 \item{months}{a vector of integer numeric, months for which midday images are downloaded}
+
+\item{days}{a vector of integer numeric, days for which midday images are downloaded}
 
 \item{download_dir}{a character string, path to directory where images are downloaded}
 }
@@ -24,6 +26,10 @@ Downloading the midday images for PhenoCam sites given a time range
 }
 \examples{
 
-download_dir <- download_midday_images('dukehw')
+download_dir <- download_midday_images('dukehw',
+ y = 2018,
+ months = 2,
+ days=1,
+ download_dir= tempdir())
 
 }

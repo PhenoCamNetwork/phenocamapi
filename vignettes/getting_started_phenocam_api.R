@@ -4,10 +4,12 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ---- fig.height=5, fig.width=6.5, message=FALSE-------------------------
+## ----libraries, include = FALSE, echo=FALSE------------------------------
 library(data.table)
-
 library(phenocamapi)
+library(lubridate)
+
+## ---- fig.height=5, fig.width=6.5, message=FALSE-------------------------
 
 # obtaining the phenocam site metadata from the server as data.table
 phenos <- get_phenos()
@@ -15,12 +17,13 @@ phenos <- get_phenos()
 # checking out the first few rows
 head(phenos$site)
 
-colnames(phenos$site)
+colnames(phenos)
 
 # removing the sites with unkown MAT and MAP values
 phenos <- phenos[!((MAT_worldclim == -9999)|(MAP_worldclim == -9999))]
 
 # extracting the PhenoCam climate space based on the WorldClim dataset
+# and plotting the sites across the climate space different vegetation type as different symbols and colors
 phenos[primary_veg_type=='DB', plot(MAT_worldclim, MAP_worldclim, pch = 19, col = 'green', xlim = c(-5, 27), ylim = c(0, 4000))]
 phenos[primary_veg_type=='DN', points(MAT_worldclim, MAP_worldclim, pch = 1, col = 'darkgreen')]
 phenos[primary_veg_type=='EN', points(MAT_worldclim, MAP_worldclim, pch = 17, col = 'brown')]
@@ -59,7 +62,8 @@ dukehw_DB_1000 <- get_pheno_ts(site = 'dukehw', vegType = 'DB', roiID = 1000, ty
 colnames(dukehw_DB_1000)
 
 dukehw_DB_1000[,date:=as.Date(date)]
-dukehw_DB_1000[,plot(date, gcc_90, col = 'green', type = 'b', title = 'dukehw')]
+dukehw_DB_1000[,plot(date, gcc_90, col = 'green', type = 'b')]
+mtext('dukehw')
 
 ## ---- fig.height=5, fig.width=6.5, message=FALSE-------------------------
 # obtaining midday_images for dukehw
@@ -68,4 +72,23 @@ duke_middays <- get_midday_list('dukehw')
 # see the first few rows
 head(duke_middays)
 
+# download a file
+destfile <- tempfile(fileext = '.jpg')
+download.file(duke_middays[1], destfile = destfile)
+
+img <- jpeg::readJPEG(destfile)
+par(mar= c(0,0,0,0))
+plot(0:1,0:1, type='n', axes= FALSE, xlab= '', ylab = '')
+rasterImage(img, 0, 0, 1, 1)
+
+
+## ---- fig.height=5, fig.width=6.5, message=FALSE, eval=FALSE-------------
+#  # download a subset
+#  download_dir <- download_midday_images(site = 'dukehw', y = 2018, months = 4, download_dir = tempdir())
+#  
+#  # list of downloaded files
+#  duke_middays_path <- dir(download_dir, pattern = 'dukehw*', full.names = TRUE)
+#  
+#  head(duke_middays_path)
+#  
 
