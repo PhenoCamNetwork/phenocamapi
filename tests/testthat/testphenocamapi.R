@@ -19,6 +19,9 @@ midday <- basename(duke_middays[1])
 
 wb <- duke_awb$AWB[1]
 
+duke_middays_dt <- parse_phenocam_filenames(duke_middays)
+parsed_duke <- duke_middays_dt[Year==2013&DOY==155, filenames]
+
 test_that("test getting site metadata", {
   expect_equal(dukehwLat, 35.973583)
 })
@@ -38,5 +41,10 @@ test_that("test getting midday data", {
 test_that("test getting awb data", {
   expect_equal(wb, "LIKELY_NO")
 })
+
+test_that("test parsing filenames", {
+  expect_equal(parsed_duke, "dukehw_2013_06_04_120119")
+})
+
 
 
