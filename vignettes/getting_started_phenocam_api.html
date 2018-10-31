@@ -81,77 +81,45 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2>Exploriong the PhenoCam metadata</h2>
 <p>We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the <code>getphenos()</code> function. The returning value would be a data.table in order to simplify further data exploration.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
+
 <span class="kw">library</span>(phenocamapi)
 
-<span class="co"># obtaining the metadata as data.table</span>
+<span class="co"># obtaining the phenocam site metadata from the server as data.table</span>
 phenos &lt;-<span class="st"> </span><span class="kw">get_phenos</span>()
 
-<span class="kw">head</span>(phenos)
-<span class="co">#&gt;              site      lat        lon elev active utc_offset date_first</span>
-<span class="co">#&gt; 1:         acadia 44.37694  -68.26083  158   TRUE         -5 2007-03-15</span>
-<span class="co">#&gt; 2:  aguatibiaeast 33.62200 -116.86700 1086   TRUE         -8 2007-08-16</span>
-<span class="co">#&gt; 3: aguatibianorth 33.60222 -117.34368 1090  FALSE         -8 2003-10-01</span>
-<span class="co">#&gt; 4:       ahwahnee 37.74670 -119.58160 1199   TRUE         -8 2008-08-28</span>
-<span class="co">#&gt; 5:      alleypond 40.74284  -73.74304   61  FALSE         -5 2014-11-05</span>
-<span class="co">#&gt; 6: alligatorriver 35.78790  -75.90380    1   TRUE         -5 2012-05-03</span>
-<span class="co">#&gt;     date_last                                             site_description</span>
-<span class="co">#&gt; 1: 2018-10-29 Acadia National Park, McFarland Hill, near Bar Harbor, Maine</span>
-<span class="co">#&gt; 2: 2018-10-29                            Agua Tibia Wilderness, California</span>
-<span class="co">#&gt; 3: 2006-10-25                            Agua Tibia Wilderness, California</span>
-<span class="co">#&gt; 4: 2018-10-29          Ahwahnee Meadow, Yosemite National Park, California</span>
-<span class="co">#&gt; 5: 2015-10-13                                 Alley Pond, Queens, New York</span>
-<span class="co">#&gt; 6: 2018-10-10     Alligator River National Wildlife Refuge, North Carolina</span>
-<span class="co">#&gt;    camera_description camera_orientation flux_data flux_networks</span>
-<span class="co">#&gt; 1:            unknown                 NE     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 2:            unknown                 SW     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 3:            unknown                 NE     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 4:            unknown                  E     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 5:  StarDot NetCam SC                  S     FALSE        &lt;list&gt;</span>
-<span class="co">#&gt; 6:  StarDot NetCam SC                  N      TRUE        &lt;list&gt;</span>
-<span class="co">#&gt;    flux_sitenames</span>
-<span class="co">#&gt; 1:               </span>
-<span class="co">#&gt; 2:               </span>
-<span class="co">#&gt; 3:               </span>
-<span class="co">#&gt; 4:               </span>
-<span class="co">#&gt; 5:               </span>
-<span class="co">#&gt; 6:         US-NC4</span>
-<span class="co">#&gt;                                                    dominant_species</span>
-<span class="co">#&gt; 1:                                                                 </span>
-<span class="co">#&gt; 2:                                                                 </span>
-<span class="co">#&gt; 3:                                                                 </span>
-<span class="co">#&gt; 4:                                                                 </span>
-<span class="co">#&gt; 5:                                                                 </span>
-<span class="co">#&gt; 6: Nyssa sylvatica, Taxodium distichum, Nyssa aquatica, Acer rubrum</span>
-<span class="co">#&gt;    primary_veg_type secondary_veg_type site_meteorology MAT_site MAP_site</span>
-<span class="co">#&gt; 1:               DB                 EN            FALSE       NA       NA</span>
-<span class="co">#&gt; 2:               SH                               FALSE       NA       NA</span>
-<span class="co">#&gt; 3:               SH                               FALSE       NA       NA</span>
-<span class="co">#&gt; 4:               EN                 GR            FALSE       NA       NA</span>
-<span class="co">#&gt; 5:               DB                               FALSE       NA       NA</span>
-<span class="co">#&gt; 6:               DB                 WL             TRUE     16.6     1310</span>
-<span class="co">#&gt;    MAT_daymet MAP_daymet MAT_worldclim MAP_worldclim koeppen_geiger</span>
-<span class="co">#&gt; 1:       7.05       1439           6.5          1303            Dfb</span>
-<span class="co">#&gt; 2:      15.75        483          14.9           504            Csa</span>
-<span class="co">#&gt; 3:      16.00        489          13.8           729            Csa</span>
-<span class="co">#&gt; 4:      12.25        871          11.8           886            Csb</span>
-<span class="co">#&gt; 5:      11.90       1263          11.7          1109            Cfa</span>
-<span class="co">#&gt; 6:      16.75       1371          16.4          1312            Cfa</span>
-<span class="co">#&gt;    ecoregion landcover_igbp flux_networks_name        flux_networks_url</span>
-<span class="co">#&gt; 1:         8              5               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 2:        11              7               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 3:        11              7               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 4:         6              8               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 5:         8             13               &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="co">#&gt; 6:         8              5          AMERIFLUX http://ameriflux.lbl.gov</span>
-<span class="co">#&gt;    flux_networks_description</span>
-<span class="co">#&gt; 1:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 2:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 3:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 4:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 5:                      &lt;NA&gt;</span>
-<span class="co">#&gt; 6:         AmeriFlux Network</span></code></pre></div>
+<span class="co"># checking out the first few rows</span>
+<span class="kw">head</span>(phenos<span class="op">$</span>site)
+<span class="co">#&gt; [1] &quot;acadia&quot;         &quot;aguatibiaeast&quot;  &quot;aguatibianorth&quot; &quot;ahwahnee&quot;      </span>
+<span class="co">#&gt; [5] &quot;alleypond&quot;      &quot;alligatorriver&quot;</span>
+
+<span class="kw">colnames</span>(phenos<span class="op">$</span>site)
+<span class="co">#&gt; NULL</span>
+
+<span class="co"># removing the sites with unkown MAT and MAP values</span>
+phenos &lt;-<span class="st"> </span>phenos[<span class="op">!</span>((MAT_worldclim <span class="op">==</span><span class="st"> </span><span class="op">-</span><span class="dv">9999</span>)<span class="op">|</span>(MAP_worldclim <span class="op">==</span><span class="st"> </span><span class="op">-</span><span class="dv">9999</span>))]
+
+<span class="co"># extracting the PhenoCam climate space based on the WorldClim dataset</span>
+phenos[primary_veg_type<span class="op">==</span><span class="st">'DB'</span>, <span class="kw">plot</span>(MAT_worldclim, MAP_worldclim, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">col =</span> <span class="st">'green'</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">27</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">4000</span>))]
+<span class="co">#&gt; NULL</span>
+phenos[primary_veg_type<span class="op">==</span><span class="st">'DN'</span>, <span class="kw">points</span>(MAT_worldclim, MAP_worldclim, <span class="dt">pch =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="st">'darkgreen'</span>)]
+<span class="co">#&gt; NULL</span>
+phenos[primary_veg_type<span class="op">==</span><span class="st">'EN'</span>, <span class="kw">points</span>(MAT_worldclim, MAP_worldclim, <span class="dt">pch =</span> <span class="dv">17</span>, <span class="dt">col =</span> <span class="st">'brown'</span>)]
+<span class="co">#&gt; NULL</span>
+phenos[primary_veg_type<span class="op">==</span><span class="st">'EB'</span>, <span class="kw">points</span>(MAT_worldclim, MAP_worldclim, <span class="dt">pch =</span> <span class="dv">25</span>, <span class="dt">col =</span> <span class="st">'orange'</span>)]
+<span class="co">#&gt; NULL</span>
+phenos[primary_veg_type<span class="op">==</span><span class="st">'AG'</span>, <span class="kw">points</span>(MAT_worldclim, MAP_worldclim, <span class="dt">pch =</span> <span class="dv">12</span>, <span class="dt">col =</span> <span class="st">'yellow'</span>)]
+<span class="co">#&gt; NULL</span>
+phenos[primary_veg_type<span class="op">==</span><span class="st">'SH'</span>, <span class="kw">points</span>(MAT_worldclim, MAP_worldclim, <span class="dt">pch =</span> <span class="dv">23</span>, <span class="dt">col =</span> <span class="st">'red'</span>)]
+<span class="co">#&gt; NULL</span>
+<span class="kw">legend</span>(<span class="st">'topleft'</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">'DB'</span>,<span class="st">'DN'</span>, <span class="st">'EN'</span>,<span class="st">'EB'</span>,<span class="st">'AG'</span>, <span class="st">'SH'</span>), 
+       <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">19</span>, <span class="dv">1</span>, <span class="dv">17</span>, <span class="dv">25</span>, <span class="dv">12</span>, <span class="dv">23</span>), 
+       <span class="dt">col =</span>  <span class="kw">c</span>(<span class="st">'green'</span>, <span class="st">'darkgreen'</span>, <span class="st">'brown'</span>,  <span class="st">'orange'</span>,  <span class="st">'yellow'</span>,  <span class="st">'red'</span> ))</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <p>or we can just list the sites with flux data:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phenofluxsites &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span><span class="ot">TRUE</span><span class="op">&amp;!</span><span class="kw">is.na</span>(flux_sitenames), .(<span class="dt">PhenoCam=</span>site, <span class="dt">Flux=</span>flux_sitenames)]
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># store sites with flux_data available</span>
+phenofluxsites &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span><span class="ot">TRUE</span><span class="op">&amp;!</span><span class="kw">is.na</span>(flux_sitenames), .(<span class="dt">PhenoCam=</span>site, <span class="dt">Flux=</span>flux_sitenames)]
+
+<span class="co"># see the first few rows</span>
 <span class="kw">head</span>(phenofluxsites)
 <span class="co">#&gt;                PhenoCam   Flux</span>
 <span class="co">#&gt; 1:       alligatorriver US-NC4</span>
@@ -163,6 +131,8 @@ phenos &lt;-<span class="st"> </span><span class="kw">get_phenos</span>()
 
 <span class="co">#list deciduous broadleaf sites with flux tower</span>
 DB.flux &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span><span class="ot">TRUE</span><span class="op">&amp;</span>primary_veg_type<span class="op">==</span><span class="st">'DB'</span>, site]
+
+<span class="co"># see the first few rows</span>
 <span class="kw">head</span>(DB.flux)
 <span class="co">#&gt; [1] &quot;alligatorriver&quot; &quot;bartlett&quot;       &quot;bartlettir&quot;     &quot;bbc3&quot;          </span>
 <span class="co">#&gt; [5] &quot;bbc4&quot;           &quot;bbc7&quot;</span></code></pre></div>
@@ -173,114 +143,61 @@ DB.flux &lt;-<span class="st"> </span>phenos[flux_data<span class="op">==</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># obtaining the list of all the available ROI's on the PhenoCam server</span>
 rois &lt;-<span class="st"> </span><span class="kw">get_rois</span>()
 
-<span class="kw">head</span>(rois)
-<span class="co">#&gt;                    roi_name             site      lat       lon roitype</span>
-<span class="co">#&gt; 1:   alligatorriver_DB_1000   alligatorriver 35.78790 -75.90380      DB</span>
-<span class="co">#&gt; 2:      arbutuslake_DB_1000      arbutuslake 43.98207 -74.23322      DB</span>
-<span class="co">#&gt; 3: arbutuslakeinlet_DB_1000 arbutuslakeinlet 43.99336 -74.24527      DB</span>
-<span class="co">#&gt; 4: arbutuslakeinlet_EN_1000 arbutuslakeinlet 43.99336 -74.24527      EN</span>
-<span class="co">#&gt; 5: arbutuslakeinlet_EN_2000 arbutuslakeinlet 43.99336 -74.24527      EN</span>
-<span class="co">#&gt; 6:     archboldavir_AG_1000     archboldavir 27.17606 -81.21958      AG</span>
-<span class="co">#&gt;    sequence_number                                      description</span>
-<span class="co">#&gt; 1:            1000                                  canopy level DB</span>
-<span class="co">#&gt; 2:            1000                                  canopy level DB</span>
-<span class="co">#&gt; 3:            1000 canopy level DB (only a small part of FOV is DB)</span>
-<span class="co">#&gt; 4:            1000                           canopy level evergreen</span>
-<span class="co">#&gt; 5:            2000              canopy level evergreen - AWB change</span>
-<span class="co">#&gt; 6:            1000                                 entire AG in FOV</span>
-<span class="co">#&gt;    first_date  last_date site_years missing_data_pct</span>
-<span class="co">#&gt; 1: 2012-05-04 2018-10-11        6.1              5.0</span>
-<span class="co">#&gt; 2: 2008-06-12 2014-08-24        5.4             13.0</span>
-<span class="co">#&gt; 3: 2015-08-18 2018-10-29        2.4             25.0</span>
-<span class="co">#&gt; 4: 2015-08-18 2017-12-07        1.9             17.0</span>
-<span class="co">#&gt; 5: 2018-05-23 2018-10-29        0.4             11.0</span>
-<span class="co">#&gt; 6: 2016-11-18 2018-10-29        1.7             12.0</span>
-<span class="co">#&gt;                                                                                       roi_page</span>
-<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000.html</span>
-<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000.html</span>
-<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000.html</span>
-<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000.html</span>
-<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000.html</span>
-<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000.html</span>
-<span class="co">#&gt;                                                                                         roi_stats_file</span>
-<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_roistats.csv</span>
-<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_roistats.csv</span>
-<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_roistats.csv</span>
-<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_roistats.csv</span>
-<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_roistats.csv</span>
-<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_roistats.csv</span>
-<span class="co">#&gt;                                                                                    one_day_summary</span>
-<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_1day.csv</span>
-<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_1day.csv</span>
-<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_1day.csv</span>
-<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_1day.csv</span>
-<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_1day.csv</span>
-<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_1day.csv</span>
-<span class="co">#&gt;                                                                                  three_day_summary</span>
-<span class="co">#&gt; 1:     https://phenocam.sr.unh.edu/data/archive/alligatorriver/ROI/alligatorriver_DB_1000_3day.csv</span>
-<span class="co">#&gt; 2:           https://phenocam.sr.unh.edu/data/archive/arbutuslake/ROI/arbutuslake_DB_1000_3day.csv</span>
-<span class="co">#&gt; 3: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_DB_1000_3day.csv</span>
-<span class="co">#&gt; 4: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_1000_3day.csv</span>
-<span class="co">#&gt; 5: https://phenocam.sr.unh.edu/data/archive/arbutuslakeinlet/ROI/arbutuslakeinlet_EN_2000_3day.csv</span>
-<span class="co">#&gt; 6:         https://phenocam.sr.unh.edu/data/archive/archboldavir/ROI/archboldavir_AG_1000_3day.csv</span>
-<span class="co">#&gt;    data_release</span>
-<span class="co">#&gt; 1:          pre</span>
-<span class="co">#&gt; 2:          pre</span>
-<span class="co">#&gt; 3:          pre</span>
-<span class="co">#&gt; 4:          pre</span>
-<span class="co">#&gt; 5:          pre</span>
-<span class="co">#&gt; 6:          pre</span></code></pre></div>
+<span class="kw">head</span>(rois<span class="op">$</span>roi_name)
+<span class="co">#&gt; [1] &quot;alligatorriver_DB_1000&quot;   &quot;arbutuslake_DB_1000&quot;     </span>
+<span class="co">#&gt; [3] &quot;arbutuslakeinlet_DB_1000&quot; &quot;arbutuslakeinlet_EN_1000&quot;</span>
+<span class="co">#&gt; [5] &quot;arbutuslakeinlet_EN_2000&quot; &quot;archboldavir_AG_1000&quot;</span>
+<span class="kw">colnames</span>(rois)
+<span class="co">#&gt;  [1] &quot;roi_name&quot;          &quot;site&quot;              &quot;lat&quot;              </span>
+<span class="co">#&gt;  [4] &quot;lon&quot;               &quot;roitype&quot;           &quot;sequence_number&quot;  </span>
+<span class="co">#&gt;  [7] &quot;description&quot;       &quot;first_date&quot;        &quot;last_date&quot;        </span>
+<span class="co">#&gt; [10] &quot;site_years&quot;        &quot;missing_data_pct&quot;  &quot;roi_page&quot;         </span>
+<span class="co">#&gt; [13] &quot;roi_stats_file&quot;    &quot;one_day_summary&quot;   &quot;three_day_summary&quot;</span>
+<span class="co">#&gt; [16] &quot;data_release&quot;</span></code></pre></div>
 <p>The <code>getphenoTS()</code> function can download a time-series and return the result as a <code>data.table</code>. For example, to obtain the time-series for <a href="https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html">DB_1000</a> from the <strong><em>dukehw</em></strong> PhenoCam site:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-<span class="co"># to obtain the DB 1000  from dukehw</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to obtain the DB 1000  from dukehw</span>
 dukehw_DB_<span class="dv">1000</span> &lt;-<span class="st"> </span><span class="kw">get_pheno_ts</span>(<span class="dt">site =</span> <span class="st">'dukehw'</span>, <span class="dt">vegType =</span> <span class="st">'DB'</span>, <span class="dt">roiID =</span> <span class="dv">1000</span>, <span class="dt">type =</span> <span class="st">'3day'</span>)
 
-<span class="kw">head</span>(dukehw_DB_<span class="dv">1000</span>)
-<span class="co">#&gt;          date year doy image_count              midday_filename midday_r</span>
-<span class="co">#&gt; 1: 2013-06-01 2013 152          57 dukehw_2013_06_01_120111.jpg 91.27133</span>
-<span class="co">#&gt; 2: 2013-06-04 2013 155          76 dukehw_2013_06_04_120119.jpg 76.39418</span>
-<span class="co">#&gt; 3: 2013-06-07 2013 158          77 dukehw_2013_06_07_120112.jpg 60.59138</span>
-<span class="co">#&gt; 4: 2013-06-10 2013 161          77 dukehw_2013_06_10_120108.jpg 76.47824</span>
-<span class="co">#&gt; 5: 2013-06-13 2013 164          77 dukehw_2013_06_13_120112.jpg 88.94067</span>
-<span class="co">#&gt; 6: 2013-06-16 2013 167          78 dukehw_2013_06_16_120110.jpg 88.74154</span>
-<span class="co">#&gt;    midday_g midday_b midday_gcc midday_rcc   r_mean   r_std   g_mean</span>
-<span class="co">#&gt; 1: 97.91501 47.39231    0.41388    0.38580 87.64029 5.90415 92.13308</span>
-<span class="co">#&gt; 2: 84.97283 33.55237    0.43594    0.39193 79.86220 6.00115 86.92451</span>
-<span class="co">#&gt; 3: 73.15058 35.59088    0.43199    0.35782 72.73630 9.49633 83.97068</span>
-<span class="co">#&gt; 4: 82.20226 37.08507    0.41990    0.39066 80.88500 8.23146 87.96595</span>
-<span class="co">#&gt; 5: 95.72012 51.37524    0.40553    0.37681 83.75471 5.89276 89.72717</span>
-<span class="co">#&gt; 6: 95.07550 48.90862    0.40853    0.38131 84.05656 5.87811 89.00122</span>
-<span class="co">#&gt;      g_std   b_mean   b_std gcc_mean gcc_std  gcc_50  gcc_75  gcc_90</span>
-<span class="co">#&gt; 1: 6.34444 46.09969 4.47645  0.40792 0.00859 0.40781 0.41395 0.41683</span>
-<span class="co">#&gt; 2: 5.26335 37.98788 3.41685  0.42465 0.00890 0.42739 0.43087 0.43443</span>
-<span class="co">#&gt; 3: 7.71469 39.55555 5.28922  0.42865 0.01318 0.43110 0.43513 0.43984</span>
-<span class="co">#&gt; 4: 7.77292 43.06439 4.72808  0.41530 0.01243 0.41633 0.42366 0.42811</span>
-<span class="co">#&gt; 5: 6.47203 46.72175 4.01465  0.40744 0.01072 0.40740 0.41517 0.42083</span>
-<span class="co">#&gt; 6: 5.17788 44.64391 4.28153  0.40900 0.00895 0.40990 0.41598 0.41989</span>
-<span class="co">#&gt;    rcc_mean rcc_std  rcc_50  rcc_75  rcc_90 max_solar_elev snow_flag</span>
-<span class="co">#&gt; 1:  0.38819 0.01176 0.38689 0.39121 0.39690       75.99634        NA</span>
-<span class="co">#&gt; 2:  0.38981 0.01032 0.39138 0.39622 0.39948       76.31210        NA</span>
-<span class="co">#&gt; 3:  0.36977 0.01326 0.37280 0.37796 0.38168       76.56521        NA</span>
-<span class="co">#&gt; 4:  0.38138 0.00881 0.38283 0.38841 0.39132       76.75881        NA</span>
-<span class="co">#&gt; 5:  0.38040 0.00995 0.38163 0.38531 0.38861       76.94218        NA</span>
-<span class="co">#&gt; 6:  0.38609 0.01249 0.38678 0.39303 0.39833       77.07864        NA</span>
-<span class="co">#&gt;    outlierflag_gcc_mean outlierflag_gcc_50 outlierflag_gcc_75</span>
-<span class="co">#&gt; 1:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 2:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 3:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 4:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 5:                   NA                 NA                 NA</span>
-<span class="co">#&gt; 6:                   NA                 NA                 NA</span>
-<span class="co">#&gt;    outlierflag_gcc_90 YEAR DOY   YYYYMMDD</span>
-<span class="co">#&gt; 1:                 NA 2013 152 2013-06-01</span>
-<span class="co">#&gt; 2:                 NA 2013 155 2013-06-04</span>
-<span class="co">#&gt; 3:                 NA 2013 158 2013-06-07</span>
-<span class="co">#&gt; 4:                 NA 2013 161 2013-06-10</span>
-<span class="co">#&gt; 5:                 NA 2013 164 2013-06-13</span>
-<span class="co">#&gt; 6:                 NA 2013 167 2013-06-16</span>
+<span class="kw">colnames</span>(dukehw_DB_<span class="dv">1000</span>)
+<span class="co">#&gt;  [1] &quot;date&quot;                 &quot;year&quot;                 &quot;doy&quot;                 </span>
+<span class="co">#&gt;  [4] &quot;image_count&quot;          &quot;midday_filename&quot;      &quot;midday_r&quot;            </span>
+<span class="co">#&gt;  [7] &quot;midday_g&quot;             &quot;midday_b&quot;             &quot;midday_gcc&quot;          </span>
+<span class="co">#&gt; [10] &quot;midday_rcc&quot;           &quot;r_mean&quot;               &quot;r_std&quot;               </span>
+<span class="co">#&gt; [13] &quot;g_mean&quot;               &quot;g_std&quot;                &quot;b_mean&quot;              </span>
+<span class="co">#&gt; [16] &quot;b_std&quot;                &quot;gcc_mean&quot;             &quot;gcc_std&quot;             </span>
+<span class="co">#&gt; [19] &quot;gcc_50&quot;               &quot;gcc_75&quot;               &quot;gcc_90&quot;              </span>
+<span class="co">#&gt; [22] &quot;rcc_mean&quot;             &quot;rcc_std&quot;              &quot;rcc_50&quot;              </span>
+<span class="co">#&gt; [25] &quot;rcc_75&quot;               &quot;rcc_90&quot;               &quot;max_solar_elev&quot;      </span>
+<span class="co">#&gt; [28] &quot;snow_flag&quot;            &quot;outlierflag_gcc_mean&quot; &quot;outlierflag_gcc_50&quot;  </span>
+<span class="co">#&gt; [31] &quot;outlierflag_gcc_75&quot;   &quot;outlierflag_gcc_90&quot;   &quot;YEAR&quot;                </span>
+<span class="co">#&gt; [34] &quot;DOY&quot;                  &quot;YYYYMMDD&quot;</span>
 
 dukehw_DB_<span class="dv">1000</span>[,date<span class="op">:</span><span class="er">=</span><span class="kw">as.Date</span>(date)]
-<span class="co"># dukehw_DB_1000[,plot(date, gcc_90)]</span></code></pre></div>
+dukehw_DB_<span class="dv">1000</span>[,<span class="kw">plot</span>(date, gcc_<span class="dv">90</span>, <span class="dt">col =</span> <span class="st">'green'</span>, <span class="dt">type =</span> <span class="st">'b'</span>, <span class="dt">title =</span> <span class="st">'dukehw'</span>)]
+<span class="co">#&gt; Warning in plot.window(...): &quot;title&quot; is not a graphical parameter</span>
+<span class="co">#&gt; Warning in plot.xy(xy, type, ...): &quot;title&quot; is not a graphical parameter</span>
+<span class="co">#&gt; Warning in axis(side, at = z, labels = labels, ...): &quot;title&quot; is not a</span>
+<span class="co">#&gt; graphical parameter</span>
+<span class="co">#&gt; Warning in axis(side = side, at = at, labels = labels, ...): &quot;title&quot; is not</span>
+<span class="co">#&gt; a graphical parameter</span>
+<span class="co">#&gt; Warning in box(...): &quot;title&quot; is not a graphical parameter</span>
+<span class="co">#&gt; Warning in title(...): &quot;title&quot; is not a graphical parameter</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>#&gt; NULL</code></pre>
+</div>
+<div id="downloading-midday-images" class="section level2">
+<h2>Downloading midday images</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># obtaining midday_images for dukehw</span>
+duke_middays &lt;-<span class="st"> </span><span class="kw">get_midday_list</span>(<span class="st">'dukehw'</span>)
+
+<span class="co"># see the first few rows</span>
+<span class="kw">head</span>(duke_middays)
+<span class="co">#&gt; [1] &quot;http://phenocam.sr.unh.edu/data/archive/dukehw/2013/05/dukehw_2013_05_31_150331.jpg&quot;</span>
+<span class="co">#&gt; [2] &quot;http://phenocam.sr.unh.edu/data/archive/dukehw/2013/06/dukehw_2013_06_01_120111.jpg&quot;</span>
+<span class="co">#&gt; [3] &quot;http://phenocam.sr.unh.edu/data/archive/dukehw/2013/06/dukehw_2013_06_02_120109.jpg&quot;</span>
+<span class="co">#&gt; [4] &quot;http://phenocam.sr.unh.edu/data/archive/dukehw/2013/06/dukehw_2013_06_03_120110.jpg&quot;</span>
+<span class="co">#&gt; [5] &quot;http://phenocam.sr.unh.edu/data/archive/dukehw/2013/06/dukehw_2013_06_04_120119.jpg&quot;</span>
+<span class="co">#&gt; [6] &quot;http://phenocam.sr.unh.edu/data/archive/dukehw/2013/06/dukehw_2013_06_05_120110.jpg&quot;</span></code></pre></div>
 </div>
 
 

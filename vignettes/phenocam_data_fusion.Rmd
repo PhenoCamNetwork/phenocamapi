@@ -17,18 +17,20 @@ knitr::opts_chunk$set(
 ```
 
 
-PhenoCam time-series are extracted time-series data obtained from ROI's for a given site. 
-Each site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI's per vegetation type. 
+This R package is an effort to simplify data wrangling steps including downloading site data and metadata.
 
-This R package is an effort to simplify data wrangling steps and finally merge them as a single dataframe.
 
-I begin with several examples for extracting Phenocam time-series directly from the server:
+Each PhenoCam site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI's per vegetation type. 'phenocamapi' is an interface to interact with the PhenoCam server to extract those data and process them in an R environment.
+
+
+I begin with several examples for extracting Phenocam data directly from the server:
+
 - Exploring the PhenoCam metadata
 - Downloading Phenocam time-series data
 - Merging with other time-series
 
 ## Exploriong the PhenoCam metadata
-We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the `getphenos()` function. The returning value would be a data.table in order to simplify further data exploration.
+We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the `get_phenos()` function. The returning value would be a data.table in order to simplify further data exploration.
 
 ```{r}
 library(data.table)
@@ -36,8 +38,6 @@ library(phenocamapi)
 
 # obtaining the metadata as data.table
 phenos <- get_phenos()
-
-head(phenos)
 ```
 
 or we can just list the sites with flux data:
@@ -47,12 +47,12 @@ head(phenofluxsites)
 
 #list deciduous broadleaf sites with flux tower
 DB.flux <- phenos[flux_data==TRUE&primary_veg_type=='DB', site]
-head(DB.flux)
 ```
 
 
 
 ## Downloading Phenocam timeseries data
+PhenoCam time-series are extracted time-series data obtained from ROI's for a given site. 
 
 To download the phenological time-series from the PhenoCam, we need to know the sitename, vegetation type and ROI ID. This information can be obtained from the [PhenoCam website](https://phenocam.sr.unh.edu/webcam/) or using the `getrois()` function:
 
@@ -60,7 +60,7 @@ To download the phenological time-series from the PhenoCam, we need to know the 
 # obtaining the list of all the available ROI's on the PhenoCam server
 rois <- get_rois()
 
-head(rois)
+colnames(rois)
 ```
 
 The `getphenoTS()` function can download a time-series and return the result as a `data.table`. For example, to obtain the time-series for [DB_1000](https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html) from the __*dukehw*__ PhenoCam site:
@@ -70,13 +70,12 @@ The `getphenoTS()` function can download a time-series and return the result as 
 # to obtain the DB 1000  from dukehw
 dukehw_DB_1000 <- get_pheno_ts(site = 'dukehw', vegType = 'DB', roiID = 1000, type = '3day')
 
-head(dukehw_DB_1000)
+colnames(dukehw_DB_1000)
 
 dukehw_DB_1000[,date:=as.Date(date)]
 # dukehw_DB_1000[,plot(date, gcc_90)]
 
 ```
-
 
 
 
@@ -86,7 +85,7 @@ In a fully programmatic settings you can load the PhenoCam dataset, find the rel
 ```{r}
 phenots <- get_pheno_ts(site = 'oregonMP', vegType = 'EN', roiID = 1000)
 
-head(phenots)
+colnames(phenots)
 
 fluxfile <- system.file('fluxnetrepo/FLX_US-Me2/FLX_US-Me2_FULLSET_DD.csv', package = 'phenocamapi')
 
@@ -101,3 +100,5 @@ fluxts[,DOY:=yday(datetime)]
 head(fluxts[, .(TIMESTAMP, TA_F)])
 
 ```
+
+
