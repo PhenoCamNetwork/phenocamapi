@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 library(data.table)
 library(phenocamapi)
 library(lubridate)
+library(jpeg)
 ```
 
 
@@ -129,11 +130,12 @@ head(duke_middays)
 destfile <- tempfile(fileext = '.jpg')
 download.file(duke_middays[1], destfile = destfile)
 
-img <- jpeg::readJPEG(destfile)
-par(mar= c(0,0,0,0))
-plot(0:1,0:1, type='n', axes= FALSE, xlab= '', ylab = '')
-rasterImage(img, 0, 0, 1, 1)
-
+img <- try(readJPEG(destfile))
+if(class(img)!='try-error'){
+  par(mar= c(0,0,0,0))
+  plot(0:1,0:1, type='n', axes= FALSE, xlab= '', ylab = '')
+  rasterImage(img, 0, 0, 1, 1)
+}
 ```
 
 
