@@ -1,6 +1,6 @@
 Package: phenocamapi
 Type: Package
-Title: Interacting with the PhenoCam data and API
+Title: Interacting with the PhenoCam Data and API
 Version: 0.1.0
 Author: Bijan Seyednasrollah  
 Maintainer: Bijan Seyednasrollah <bijan.s.nasr@gmail.com>
