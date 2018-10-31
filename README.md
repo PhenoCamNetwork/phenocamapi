@@ -1,10 +1,10 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1464365.svg)](https://doi.org/10.5281/zenodo.1464365) 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) 
-[![Travis CI](https://travis-ci.org/bnasr/phenocam.svg?branch=master)](https://travis-ci.org/bnasr/phenocam) 
-[![Coverage status](https://codecov.io/gh/bnasr/phenocam/branch/master/graph/badge.svg)](https://codecov.io/github/bnasr/phenocam?branch=master) 
+[![Travis CI](https://travis-ci.org/bnasr/phenocamapi.svg?branch=master)](https://travis-ci.org/bnasr/phenocamapi) 
+[![Coverage status](https://codecov.io/gh/bnasr/phenocamapi/branch/master/graph/badge.svg)](https://codecov.io/github/bnasr/phenocamapi?branch=master) 
 
 
-# Extracting PhenoCam data using phenocam R Package 
+# Extracting PhenoCam data using phenocamapi R Package 
 
 ```{r}
 knitr::opts_chunk$set(
