@@ -1,7 +1,9 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1464365.svg)](https://doi.org/10.5281/zenodo.1464365) 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) 
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) 
 [![Travis CI](https://travis-ci.org/bnasr/phenocamapi.svg?branch=master)](https://travis-ci.org/bnasr/phenocamapi) 
 [![Coverage status](https://codecov.io/gh/bnasr/phenocamapi/branch/master/graph/badge.svg)](https://codecov.io/gh/bnasr/phenocamapi)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1464365.svg)](https://doi.org/10.5281/zenodo.1464365) 
+
 
 # Extracting PhenoCam data using phenocamapi R Package 
 
