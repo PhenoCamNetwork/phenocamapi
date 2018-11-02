@@ -8,7 +8,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -25,31 +24,31 @@ library(jpeg)
 
 
 
-This R package is an effort to simplify data wrangling steps including downloading site data and metadata.
+The `phenocamapi`[^*] R package is developed to simplify interacting with the PhenoCam dataset and perform data wrangling steps on sites' data and metaadata.
+
+Each PhenoCam site has specific metadata including but not limited to how a site is set up and where it is located, what vegetation type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI's per vegetation type. `phenocamapi` is an interface to interact with the PhenoCam server to extract those data and process them in an R environment.
 
 
-Each PhenoCam site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI's per vegetation type. 'phenocamapi' is an interface to interact with the PhenoCam server to extract those data and process them in an R environment.
-
-
-I begin with several examples for extracting Phenocam data directly from the server:
+I begin with several examples for extracting PhenoCam data directly from the server:
 
 - Exploring the PhenoCam metadata
-- Filtering the dataset using attributes
-- Downloading Phenocam time-series data
-- Extracting the list midday images
+- Filtering the dataset by site attributes
+- Downloading PhenoCam time-series data
+- Extracting the list of midday images
 - Downloading midday images for a given time range
  
-## Exploriong the PhenoCam metadata
-We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the `get_phenos()` function. The returning value would be a data.table in order to simplify further data exploration.
+## Exploring the PhenoCam metadata
+We can obtain an up-to-date `data.frame` of the metadata of the entire PhenoCam network using the `get_phenos()` function. The returning value would be a `data.table` in order to simplify further data exploration.
 
 ```{r, fig.height=5, fig.width=6.5, message=FALSE}
 
 # obtaining the phenocam site metadata from the server as data.table
 phenos <- get_phenos()
 
-# checking out the first few rows
+# checking out the first few sites
 head(phenos$site)
 
+# checking out the columns
 colnames(phenos)
 
 # removing the sites with unkown MAT and MAP values
@@ -88,7 +87,7 @@ head(DB.flux)
 ```
 
 
-## Downloading Phenocam timeseries data
+## Downloading PhenoCam time-series data
 PhenoCam time-series are extracted time-series data obtained from ROI's for a given site. 
 
 To download the phenological time-series from the PhenoCam, we need to know the sitename, vegetation type and ROI ID. This information can be obtained from the <a href="https://phenocam.sr.unh.edu/webcam/">PhenoCam website</a> or using the `get_rois()` function:
@@ -99,11 +98,16 @@ To download the phenological time-series from the PhenoCam, we need to know the 
 rois <- get_rois()
 
 head(rois$roi_name)
+
 colnames(rois)
+
+# list all the ROI's for dukehw
+rois[site=='dukehw',]
 ```
 
 
-The `get_pheno_ts()` function can download a time-series and return the result as a `data.table`. For example, to obtain the time-series for <a href="https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html">DB_1000</a> from the __*dukehw*__ PhenoCam site, we can run the following code:
+
+The `get_pheno_ts()` function can download a time-series and return the result as a `data.table`. For example, to obtain the time-series for <a href="https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html">DB_1000</a> from the **dukehw** PhenoCam site, we can run the following code:
 
 ```{r, fig.height=5, fig.width=6.5, message=FALSE}
 # to obtain the DB 1000  from dukehw
@@ -113,12 +117,12 @@ colnames(dukehw_DB_1000)
 
 dukehw_DB_1000[,date:=as.Date(date)]
 dukehw_DB_1000[,plot(date, gcc_90, col = 'green', type = 'b')]
-mtext('dukehw')
+mtext('Duke Forest, Hardwood', font = 2)
 ```
 
 
-## Extracting the list midday images
-While Phenocam site may have many images in a given day, a list of midday images (only one image for a day) can be useful for simple analysis.
+## Extracting the list of midday images
+While PhenoCam sites may have many images in a given day, a list of midday images (only one image a day) can be useful for simple analyses.
 ```{r, fig.height=5, fig.width=6.5, message=FALSE}
 # obtaining midday_images for dukehw
 duke_middays <- get_midday_list('dukehw', direct = FALSE)
@@ -142,6 +146,7 @@ if(class(img)!='try-error'){
 
 ## Downloading midday images for a given time range
 ```{r, fig.height=5, fig.width=6.5, message=FALSE, eval=FALSE}
+
 # download a subset
 download_dir <- download_midday_images(site = 'dukehw', y = 2018, months = 4, download_dir = tempdir())
 
@@ -153,4 +158,7 @@ head(duke_middays_path)
 ```
 
 While the purpose of this document is to show the basic commands for interacting with the PhenoCam API. More vignettes can be found in the package on how to merge external time-series (e.g. Flux data) with the PhenoCam time-series. 
+
+[^*]: The R package is developed and maintained by <a href="https://bnasr.github.io/">Bijan Seyednarollah</a>. Most recent release is available from: https://github.com/bnasr/xROI.
+
 

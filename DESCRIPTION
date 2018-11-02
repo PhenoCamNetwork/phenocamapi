@@ -9,15 +9,17 @@ License: AGPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends:
+  R (>= 3.4.0),
   data.table,
   lubridate,
   rjson,
   RCurl,
   utils,
-Suggests: testthat,
-    knitr,
-    rmarkdown,
-    jpeg,
+Suggests: 
+  testthat,
+  knitr,
+  rmarkdown,
+  jpeg,
 RoxygenNote: 6.0.1.9000
 VignetteBuilder: knitr
 URL: https://github.com/bnasr/phenocamapi/

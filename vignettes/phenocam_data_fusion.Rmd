@@ -17,22 +17,22 @@ knitr::opts_chunk$set(
 ```
 
 
-This R package is an effort to simplify data wrangling steps including downloading site data and metadata.
+This R package is an effort to simplify data wrangling steps for fusion of PhenoCam time-series and other datasets.
 
 
-Each PhenoCam site has specific metadata including but not limited to how the site is set-up and where it is located, what vegetaion type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI's per vegetation type. 'phenocamapi' is an interface to interact with the PhenoCam server to extract those data and process them in an R environment.
+Each PhenoCam site has specific metadata including but not limited to how a site is set up and where it is located, what vegetation type is visible from the camera, and its climate regime. Each PhenoCam may have none to several ROI's per vegetation type. `phenocamapi` is an interface to interact with the PhenoCam server to extract those data and process them in an R environment.
 
 
 I begin with several examples for extracting Phenocam data directly from the server:
 
 - Exploring the PhenoCam metadata
-- Downloading Phenocam time-series data
+- Downloading PhenoCam time-series data
 - Merging with other time-series
 
 ## Exploriong the PhenoCam metadata
-We can obtain an up-to-date dataframe of the metadata of the entire PhenoCam network using the `get_phenos()` function. The returning value would be a data.table in order to simplify further data exploration.
+We can obtain an up-to-date `data.frame` of the metadata of the entire PhenoCam network using the `get_phenos()` function. The returning value would be a `data.table` in order to simplify further data exploration.
 
-```{r}
+```{r, fig.height=5, fig.width=6.5, message=FALSE}
 library(data.table)
 library(phenocamapi)
 
@@ -40,49 +40,65 @@ library(phenocamapi)
 phenos <- get_phenos()
 ```
 
-or we can just list the sites with flux data:
-```{r}
+
+## Filtering the dataset using attributes
+For example we can just list the sites that have flux tower:
+
+```{r, fig.height=5, fig.width=6.5, message=FALSE}
+# store sites with flux_data available
 phenofluxsites <- phenos[flux_data==TRUE&!is.na(flux_sitenames), .(PhenoCam=site, Flux=flux_sitenames)]
+
+# see the first few rows
 head(phenofluxsites)
 
 #list deciduous broadleaf sites with flux tower
 DB.flux <- phenos[flux_data==TRUE&primary_veg_type=='DB', site]
+
+# see the first few rows
+head(DB.flux)
 ```
 
 
-
-## Downloading Phenocam timeseries data
+## Downloading PhenoCam time-series data
 PhenoCam time-series are extracted time-series data obtained from ROI's for a given site. 
 
-To download the phenological time-series from the PhenoCam, we need to know the sitename, vegetation type and ROI ID. This information can be obtained from the [PhenoCam website](https://phenocam.sr.unh.edu/webcam/) or using the `getrois()` function:
+To download the phenological time-series from the PhenoCam, we need to know the sitename, vegetation type and ROI ID. This information can be obtained from the <a href="https://phenocam.sr.unh.edu/webcam/">PhenoCam website</a> or using the `get_rois()` function:
 
-```{r}
+
+```{r, fig.height=5, fig.width=6.5, message=FALSE}
 # obtaining the list of all the available ROI's on the PhenoCam server
 rois <- get_rois()
 
+head(rois$roi_name)
+
 colnames(rois)
+
+# list all the ROI's for dukehw
+rois[site=='dukehw',]
 ```
 
-The `getphenoTS()` function can download a time-series and return the result as a `data.table`. For example, to obtain the time-series for [DB_1000](https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html) from the __*dukehw*__ PhenoCam site:
 
-```{r}
 
+The `get_pheno_ts()` function can download a time-series and return the result as a `data.table`. For example, to obtain the time-series for <a href="https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html">DB_1000</a> from the **dukehw** PhenoCam site, we can run the following code:
+
+```{r, fig.height=5, fig.width=6.5, message=FALSE}
 # to obtain the DB 1000  from dukehw
 dukehw_DB_1000 <- get_pheno_ts(site = 'dukehw', vegType = 'DB', roiID = 1000, type = '3day')
 
 colnames(dukehw_DB_1000)
 
 dukehw_DB_1000[,date:=as.Date(date)]
-# dukehw_DB_1000[,plot(date, gcc_90)]
-
+dukehw_DB_1000[,plot(date, gcc_90, col = 'green', type = 'b')]
+mtext('Duke Forest, Hardwood', font = 2)
 ```
+
 
 
 
 ## Merge with other time-series such as flux data 
 In a fully programmatic settings you can load the PhenoCam dataset, find the related flux data, load the flux data and merge everything together as follows:
 
-```{r}
+```{r, fig.height=5, fig.width=6.5, message=FALSE}
 phenots <- get_pheno_ts(site = 'oregonMP', vegType = 'EN', roiID = 1000)
 
 colnames(phenots)
