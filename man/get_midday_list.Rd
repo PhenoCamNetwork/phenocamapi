@@ -4,10 +4,12 @@
 \alias{get_midday_list}
 \title{Extracting the list of midday images for PhenoCam sites}
 \usage{
-get_midday_list(site)
+get_midday_list(site, direct = TRUE)
 }
 \arguments{
 \item{site}{a character string of the PhenoCam site name}
+
+\item{direct}{logical value indicating whether obtain the list from directly from the API or from the file on the server, default is TRUE}
 }
 \value{
 a vetor of URL's to the midday images for a given site
@@ -17,7 +19,7 @@ Extracting the list of midday images for PhenoCam sites
 }
 \examples{
 
-midday_url <- get_midday_list('dukehw')
+midday_url <- get_midday_list('dukehw', direct = FALSE)
 head(midday_url)
 
 }

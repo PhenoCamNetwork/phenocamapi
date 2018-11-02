@@ -17,7 +17,7 @@
 #'  download_dir= tempdir())
 #'
 download_midday_images <- function(site, y = year(Sys.Date()), months = 1, days=1, download_dir){
-  midday_list <- get_midday_list(site)
+  midday_list <- get_midday_list(site, direct = FALSE)
   midday_table <- parse_phenocam_filenames(midday_list)
 
   download_list <- midday_table[Year==y&Month%in%months&Day%in%days, filepaths]

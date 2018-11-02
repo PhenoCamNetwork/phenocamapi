@@ -121,7 +121,7 @@ mtext('dukehw')
 While Phenocam site may have many images in a given day, a list of midday images (only one image for a day) can be useful for simple analysis.
 ```{r, fig.height=5, fig.width=6.5, message=FALSE}
 # obtaining midday_images for dukehw
-duke_middays <- get_midday_list('dukehw')
+duke_middays <- get_midday_list('dukehw', direct = FALSE)
 
 # see the first few rows
 head(duke_middays)

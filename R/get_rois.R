@@ -2,7 +2,7 @@
 #'
 #' @return a data.table with a list of all the PhenoCam ROI's and their metadata
 #' @importFrom data.table data.table as.data.table
-#' @import rjson
+#' @importFrom rjson fromJSON
 #' @export
 #' @examples
 #'
