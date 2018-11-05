@@ -6,8 +6,8 @@
 [![Coverage status](https://codecov.io/gh/bnasr/phenocamapi/branch/master/graph/badge.svg)](https://codecov.io/gh/bnasr/phenocamapi)
 
 [![CRAN status](http://www.r-pkg.org/badges/version-last-release/xROI)](https://cran.r-project.org/package=phenocamapi) 
-[![Downloads](http://cranlogs.r-pkg.org/badges/xROI?color=brightgreen)](http://www.r-pkg.org/pkg/phenocamapi) 
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/xROI?color=brightgreen)](http://www.r-pkg.org/pkg/phenocamapi) 
+[![Downloads](http://cranlogs.r-pkg.org/badges/phenocamapi?color=brightgreen)](http://www.r-pkg.org/pkg/phenocamapi) 
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/phenocamapi?color=brightgreen)](http://www.r-pkg.org/pkg/phenocamapi) 
 
 
 # Extracting PhenoCam data using phenocamapi R Package 
