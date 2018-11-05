@@ -1,8 +1,13 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1464365.svg)](https://doi.org/10.5281/zenodo.1464365) 
+
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) 
 [![Travis CI](https://travis-ci.org/bnasr/phenocamapi.svg?branch=master)](https://travis-ci.org/bnasr/phenocamapi) 
 [![Coverage status](https://codecov.io/gh/bnasr/phenocamapi/branch/master/graph/badge.svg)](https://codecov.io/gh/bnasr/phenocamapi)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1464365.svg)](https://doi.org/10.5281/zenodo.1464365) 
+
+[![CRAN status](http://www.r-pkg.org/badges/version-last-release/xROI)](https://cran.r-project.org/package=phenocamapi) 
+[![Downloads](http://cranlogs.r-pkg.org/badges/xROI?color=brightgreen)](http://www.r-pkg.org/pkg/phenocamapi) 
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/xROI?color=brightgreen)](http://www.r-pkg.org/pkg/phenocamapi) 
 
 
 # Extracting PhenoCam data using phenocamapi R Package 
