@@ -9,7 +9,6 @@
 #'
 parse_phenocam_filenames <- function(filepaths)
 {
-  require(data.table)
   filenames <- gsub(paste('.jpg',
                           '.tiff',
                           '.tif',
