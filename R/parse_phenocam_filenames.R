@@ -4,8 +4,8 @@
 #' @param filepaths a character vector of filenames
 #' @return a datatable containing filenames, with site name, date and timing
 #' @keywords  Parse Filename
-#' @export
 #' @import data.table
+#' @export
 #'
 parse_phenocam_filenames <- function(filepaths)
 {
