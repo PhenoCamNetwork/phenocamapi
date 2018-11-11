@@ -5,21 +5,18 @@
 #' @return a datatable containing filenames, with site name, date and timing
 #' @keywords  Parse Filename
 #' @export
-#' @importFrom data.table data.table as.data.table
-#' @importFrom lubridate date yday
+#' @import data.table
 #'
 parse_phenocam_filenames <- function(filepaths)
 {
+  require(data.table)
   filenames <- gsub(paste('.jpg',
-                          '.JPG',
                           '.tiff',
-                          '.TIFF',
-                          # '.tif',
-                          # '.TIF',
+                          '.tif',
                           '.dng',
-                          '.DNG',
                           sep = '|')
-                    , '', basename(filepaths))
+                    , '', basename(filepaths),
+                    ignore.case = TRUE)
 
   werr <- grepl('.err', filenames, fixed = TRUE)
 
@@ -33,17 +30,15 @@ parse_phenocam_filenames <- function(filepaths)
   colnames(imgDT) <- c('filepaths', 'filenames', 'Site', 'Year', 'Month','Day','HHMMSS')
   imgDT <- data.table(imgDT)
 
-  imgDT[,Year:=as.numeric(Year)]
-  imgDT[,Month:=as.numeric(Month)]
-  imgDT[,Day:=as.numeric(Day)]
-  imgDT[,HHMMSS:=as.numeric(HHMMSS)]
-  imgDT[,Hour:=floor(HHMMSS/10000)]
-  imgDT[,Minute:=floor((HHMMSS%%10000)/100)]
-  imgDT[,Second:=HHMMSS%%100]
-  imgDT[,DOY:=yday(ISOdate(Year, Month, Day))]
-  imgDT[,Date:=date(ISOdate(Year, Month, Day))]
-  imgDT[,DateTime:=ISOdatetime(Year, Month, Day, Hour, Minute, Second)]
-  # imgDT[,conT:=Year+DOY/(365+(2001%%4==0))]
-  # imgDT[,YearDOY:=Year+DOY/1000]
+  imgDT$Year <- as.numeric(imgDT$Year)
+  imgDT$Month <- as.numeric(imgDT$Month)
+  imgDT$Day <- as.numeric(imgDT$Day)
+  imgDT$HHMMSS <- as.numeric(imgDT$HHMMSS)
+  imgDT$Hour <- floor(imgDT$HHMMSS/10000)
+  imgDT$Minute <- floor((imgDT$HHMMSS%%10000)/100)
+  imgDT$Second <- imgDT$HHMMSS%%100
+  imgDT$DOY <- yday(ISOdate(imgDT$Year, imgDT$Month, imgDT$Day))
+  imgDT$Date <- as.Date(ISOdate(imgDT$Year, imgDT$Month, imgDT$Day))
+  imgDT$DateTime <- ISOdatetime(imgDT$Year, imgDT$Month, imgDT$Day, imgDT$Hour, imgDT$Minute, imgDT$Second)
   imgDT
 }

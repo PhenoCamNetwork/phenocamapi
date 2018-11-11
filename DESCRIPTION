@@ -12,7 +12,6 @@ LazyData: true
 Depends:
   R (>= 3.4.0),
   data.table,
-  lubridate,
   rjson,
   RCurl,
   utils,

@@ -7,6 +7,7 @@
 #' @param download_dir a character string, path to directory where images are downloaded
 #' @return a character string, path to directory where images are downloaded
 #' @import RCurl
+#' @import data.table
 #' @export
 #' @examples
 #'
@@ -20,7 +21,7 @@ download_midday_images <- function(site, y = year(Sys.Date()), months = 1, days=
   midday_list <- get_midday_list(site, direct = FALSE)
   midday_table <- parse_phenocam_filenames(midday_list)
 
-  download_list <- midday_table[Year==y&Month%in%months&Day%in%days, filepaths]
+  download_list <- midday_table[midday_table$Year==y&midday_table$Month%in%months&midday_table$Day%in%days,]$filepaths
 
   n <- length(download_list)
 
