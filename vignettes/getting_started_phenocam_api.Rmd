@@ -53,7 +53,6 @@ To explore the PhenoCam data, we'll use several packages for this tutorial.
 
 library(data.table)
 library(phenocamapi)
-library(lubridate)
 library(jpeg)
 
 ```
