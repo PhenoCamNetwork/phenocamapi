@@ -50,7 +50,7 @@ download_midday_images <- function(site, y = year(Sys.Date()), months = 1, days=
       warning(destfile, ' was already in ', download_dir)
       next()
     }
-    download.file(download_url, destfile = destfile, quiet = TRUE)
+    download.file(download_url, destfile = destfile, quiet = TRUE, mode = 'wb')
   }
 
   download_dir

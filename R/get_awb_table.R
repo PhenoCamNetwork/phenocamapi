@@ -23,7 +23,7 @@ get_awb_table <- function(site){
     return(NULL)
   }
 
-  download_try <- try(download.file(url, destfile = tmp_dest, quiet = TRUE))
+  download_try <- try(download.file(url, destfile = tmp_dest, quiet = TRUE, mode = 'w'))
   if(class(download_try)=='try-error') {
     warning('download from the phenocam server was failed')
     return(NULL)

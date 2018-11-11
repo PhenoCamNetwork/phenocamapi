@@ -23,7 +23,7 @@ get_pheno_ts <- function(site, vegType, roiID, type = '3day'){
   url <- paste0(.Options$phenocam_server, '/data/archive/', site, '/ROI/', site, '_', vegType, '_', sprintf(fmt = '%04d', roiID), ext)
 
   tmp <- tempfile(fileext='.csv')
-  if(class(try(download.file(url, destfile = tmp)))=='try-error') {
+  if(class(try(download.file(url, destfile = tmp, mode = 'w')))=='try-error') {
     stop('file was not found on the server!')
   }else{
     ts <- read.csv(tmp, skip = 22)
