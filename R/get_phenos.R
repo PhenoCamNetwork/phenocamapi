@@ -22,7 +22,13 @@ get_phenos <- function(){
                    utc_offset = sapply(phenos, function(x){tmp = x$utc_offset; if(is.null(tmp)) tmp <- NA; tmp}),
                    date_first = sapply(phenos, function(x){tmp = x$date_first; if(is.null(tmp)) tmp <- NA; tmp}),
                    date_last = sapply(phenos, function(x){tmp = x$date_last; if(is.null(tmp)) tmp <- NA; tmp}),
+                   infrared = sapply(phenos, function(x){tmp = x$infrared; if(is.null(tmp)) tmp <- NA; tmp}),
+                   contact1 = sapply(phenos, function(x){tmp = x$contact1; if(is.null(tmp)) tmp <- NA; tmp}),
+                   contact2 = sapply(phenos, function(x){tmp = x$contact2; if(is.null(tmp)) tmp <- NA; tmp}),
+
                    site_description = sapply(phenos, function(x){tmp = x$sitemetadata$site_description; if(is.null(tmp)) tmp <- NA; tmp}),
+                   site_type = sapply(phenos, function(x){tmp = x$sitemetadata$site_type; if(is.null(tmp)) tmp <- NA; tmp}),
+                   group = sapply(phenos, function(x){tmp = x$sitemetadata$group; if(is.null(tmp)) tmp <- NA; tmp}),
                    camera_description = sapply(phenos, function(x){tmp = x$sitemetadata$camera_description; if(is.null(tmp)) tmp <- NA; tmp}),
                    camera_orientation = sapply(phenos, function(x){tmp = x$sitemetadata$camera_orientation; if(is.null(tmp)) tmp <- NA; tmp}),
                    flux_data = sapply(phenos, function(x){tmp = x$sitemetadata$flux_data; if(is.null(tmp)) tmp <- NA; tmp}),
@@ -43,7 +49,10 @@ get_phenos <- function(){
                    MAP_worldclim = sapply(phenos, function(x){tmp = x$sitemetadata$MAP_worldclim; if(is.null(tmp)) tmp <- NA; tmp}),
                    koeppen_geiger = sapply(phenos, function(x){tmp = x$sitemetadata$koeppen_geiger; if(is.null(tmp)) tmp <- NA; tmp}),
                    ecoregion = sapply(phenos, function(x){tmp = x$sitemetadata$ecoregion; if(is.null(tmp)) tmp <- NA; tmp}),
-                   landcover_igbp = sapply(phenos, function(x){tmp = x$sitemetadata$landcover_igbp; if(is.null(tmp)) tmp <- NA; tmp})
+                   landcover_igbp = sapply(phenos, function(x){tmp = x$sitemetadata$landcover_igbp; if(is.null(tmp)) tmp <- NA; tmp}),
+                   dataset_version1 = sapply(phenos, function(x){tmp = x$sitemetadata$dataset_version1; if(is.null(tmp)) tmp <- NA; tmp}),
+                   site_acknowledgements = sapply(phenos, function(x){tmp = x$sitemetadata$site_acknowledgements; if(is.null(tmp)) tmp <- NA; tmp}),
+                   modified = sapply(phenos, function(x){tmp = x$sitemetadata$modified; if(is.null(tmp)) tmp <- NA; tmp})
   )
 
   dt$flux_networks_name <- sapply(dt$flux_networks, function(x){
@@ -63,6 +72,12 @@ get_phenos <- function(){
       return(NA)
     x[[1]]$Description
   })
+
+  dt[,contact1:=gsub(pattern = ' AT ', replacement = '@', contact1, fixed = TRUE)]
+  dt[,contact1:=gsub(pattern = ' DOT ', replacement = '.', contact1, fixed = TRUE)]
+
+  dt[,contact2:=gsub(pattern = ' AT ', replacement = '@', contact2, fixed = TRUE)]
+  dt[,contact2:=gsub(pattern = ' DOT ', replacement = '.', contact2, fixed = TRUE)]
 
   dt
 }
