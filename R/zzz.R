@@ -1,6 +1,7 @@
 
 
 globalVariables(names = c('Year','Month', 'Day', 'Hour', 'Minute', 'Second',
+                          'contact1', 'contact2',
                           'HHMMSS','DOY', 'Date', 'DateTime', 'year','filepaths',
                           'imgfile', 'AWB', 'maxmonthdev', 'wb', '.', ':='))
 
