@@ -4,8 +4,8 @@
 \alias{download_midday_images}
 \title{Downloading the midday images for PhenoCam sites given a time range}
 \usage{
-download_midday_images(site, y = year(Sys.Date()), months = 1, days = 1,
-  download_dir)
+download_midday_images(site, y = year(Sys.Date()), months = 1,
+  days = 1, download_dir)
 }
 \arguments{
 \item{site}{a character string, the PhenoCam site name}
