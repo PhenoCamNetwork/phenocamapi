@@ -1,8 +1,8 @@
 Package: phenocamapi
 Type: Package
 Title: Interacting with the PhenoCam Data and API
-Version: 0.1.4
-Date: 2019-03-18
+Version: 0.1.5
+Date: 2019-05-20
 Author: Bijan Seyednasrollah  
 Maintainer: Bijan Seyednasrollah <bijan.s.nasr@gmail.com>
 Description: A bundle to facilitate working with PhenoCam timeseries and data.   The user would be able to obtain phenological time-series and site metadata from the PhenoCam network <https://phenocam.sr.unh.edu/webcam/>.
