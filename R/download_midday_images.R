@@ -50,7 +50,11 @@ download_midday_images <- function(site, y = year(Sys.Date()), months = 1, days=
       warning(destfile, ' was already in ', download_dir)
       next()
     }
-    download.file(download_url, destfile = destfile, quiet = TRUE, mode = 'wb')
+    download_try <- try(download.file(download_url, destfile = destfile, quiet = TRUE, mode = 'wb'))
+    if(class(download_try) == 'try-error'){
+      warning('download from the phenocam server was failed')
+      return(NULL)
+    }
   }
 
   download_dir
