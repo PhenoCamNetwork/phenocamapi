@@ -33,11 +33,6 @@ get_midday_list <- function(site, direct = TRUE){
     url <- sprintf('%s/data/archive/%s/ROI/%s-midday.txt', phenocam_server, site, site)
     tmp_dest <- tempfile(fileext = '.txt')
 
-    if(!RCurl::url.exists(url)) {
-      warning('midday list file was not found on the Phenocam server!')
-      return(NULL)
-    }
-
     download_try <- try(download.file(url, destfile = tmp_dest, quiet = TRUE, mode = 'w'))
     if(class(download_try)=='try-error') {
       warning('download from the phenocam server was failed')
