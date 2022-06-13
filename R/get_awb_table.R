@@ -18,11 +18,6 @@ get_awb_table <- function(site){
 
   tmp_dest <- tempfile(fileext = '.txt')
 
-  if(!RCurl::url.exists(url)) {
-    warning('AWB file was not found on the Phenocam server!')
-    return(NULL)
-  }
-
   download_try <- try(download.file(url, destfile = tmp_dest, quiet = TRUE, mode = 'w'))
   if(class(download_try)=='try-error') {
     warning('download from the phenocam server was failed')
