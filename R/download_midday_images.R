@@ -17,47 +17,51 @@
 #'  days=1,
 #'  download_dir= tempdir())
 #'
-download_midday_images <- function(site, y = year(Sys.Date()), months = 1, days=1, download_dir){
-  midday_list <- get_midday_list(site, direct = FALSE)
+download_midday_images <- function (site, 
+                                    y = year(Sys.Date()),
+                                    months = 1, days = 1, 
+                                    download_dir, make_dir = FALSE) 
+{
+  midday_list <- get_midday_list(site, direct = TRUE)
   midday_table <- parse_phenocam_filenames(midday_list)
-
-  download_list <- midday_table[midday_table$Year==y&midday_table$Month%in%months&midday_table$Day%in%days,]$filepaths
-
+  download_list <- midday_table[midday_table$Year == y & midday_table$Month %in% 
+                                  months & midday_table$Day %in% days, ]$filepaths
   n <- length(download_list)
-
-  if(n==0) {
-    warning('no files to download!')
+  if (n == 0) {
+    warning("no files to download!")
     return(NULL)
   }
-
-  if(!dir.exists(download_dir)){
-    stop(download_dir, ' directory does not exist!')
+  if (make_dir) {
+    dir.create(download_dir, recursive = TRUE)
   }
-
-  pb <- txtProgressBar(0, n , style = 3)
-
-  for(i in 1:n){
+  if (!dir.exists(download_dir)) {
+    stop(download_dir, " directory does not exist!")
+  }
+  
+  pb <- txtProgressBar(0, n, style = 3)
+  
+  for (i in 1:n) {
     download_url <- download_list[i]
     setTxtProgressBar(pb, i)
-
-    if(!RCurl::url.exists(download_url)) {
-      warning(download_url, ' does not exist!')
-      next()
+    destfile <- paste0(download_dir, "/", basename(download_url))
+    
+    if (file.exists(destfile)) {
+      warning(destfile, " was already in ", download_dir)
+      (next)()
     }
-
-    destfile <- paste0(download_dir, '/', basename(download_url))
-    if(file.exists(destfile)) {
-      warning(destfile, ' was already in ', download_dir)
-      next()
+    
+    tryDownload <- tryCatch(download.file(download_url, destfile = destfile, quiet = TRUE, 
+                                          mode = "wb"), error = function(e) e )
+    
+    if (any(grep('[Ee]rror', class(tryDownload)) ) ) {
+      warning(download_url, "does not exist!")
+      (next)()
     }
-    download_try <- try(download.file(download_url, destfile = destfile, quiet = TRUE, mode = 'wb'))
-    if(class(download_try) == 'try-error'){
-      warning('download from the phenocam server was failed')
-      return(NULL)
-    }
+    
   }
-
+  cat('\n')
   download_dir
 }
+
 
 
