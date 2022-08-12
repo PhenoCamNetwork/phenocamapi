@@ -22,7 +22,7 @@ download_midday_images <- function (site,
                                     months = 1, days = 1, 
                                     download_dir, make_dir = FALSE) 
 {
-  midday_list <- get_midday_list(site, direct = TRUE)
+  midday_list <- get_midday_list(site, direct = FALSE)
   midday_table <- parse_phenocam_filenames(midday_list)
   download_list <- midday_table[midday_table$Year == y & midday_table$Month %in% 
                                   months & midday_table$Day %in% days, ]$filepaths
