@@ -12,7 +12,7 @@
 #'
 get_awb_table <- function(site){
 
-  phenocam_server = 'http://phenocam.sr.unh.edu'
+  phenocam_server = 'http://phenocam.nau.edu'
 
   url <- sprintf('%s/data/archive/%s/ROI/%s-awb.txt', phenocam_server, site, site)
 
