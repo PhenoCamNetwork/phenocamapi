@@ -11,7 +11,7 @@
 #'
 get_rois <- function(){
   # getting the metadata from the phenocam
-  rois <- fromJSON(file = 'https://phenocam.sr.unh.edu/api/roilists/?limit=10000')$results
+  rois <- fromJSON(file = 'https://phenocam.nau.edu/api/roilists/?limit=10000')$results
 
   # getting organized in a data.table
   dt <- data.table(roi_name = sapply(rois, function(x){tmp = x$roi_name; if(is.null(tmp)) tmp <- NA; tmp}),
