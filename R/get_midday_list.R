@@ -12,8 +12,8 @@
 #' midday_url <- get_midday_list('dukehw', direct = FALSE)
 #' head(midday_url)
 #'
-get_midday_list <- function(site, direct = TRUE){
-  phenocam_server = 'http://phenocam.sr.unh.edu'
+get_midday_list <- function(site, direct = FALSE){
+  phenocam_server = 'http://phenocam.nau.edu'
 
   if(direct){
 
