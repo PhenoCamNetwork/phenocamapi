@@ -11,7 +11,7 @@
 #'
 get_phenos <- function(){
   # getting the metadata from the phenocam
-  phenos <- fromJSON(file = 'https://phenocam.sr.unh.edu/api/cameras/?limit=10000')$results
+  phenos <- fromJSON(file = 'https://phenocam.nau.edu/api/cameras/?limit=10000')$results
 
   # getting organized in a data.table
   dt <- data.table(site = sapply(phenos, function(x){tmp = x$Sitename; if(is.null(tmp)) tmp <- NA; tmp}),
