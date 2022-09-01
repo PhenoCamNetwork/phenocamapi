@@ -12,16 +12,11 @@
 #'
 get_awb_table <- function(site){
 
-  phenocam_server = 'http://phenocam.sr.unh.edu'
+  phenocam_server = 'http://phenocam.nau.edu'
 
   url <- sprintf('%s/data/archive/%s/ROI/%s-awb.txt', phenocam_server, site, site)
 
   tmp_dest <- tempfile(fileext = '.txt')
-
-  if(!RCurl::url.exists(url)) {
-    warning('AWB file was not found on the Phenocam server!')
-    return(NULL)
-  }
 
   download_try <- try(download.file(url, destfile = tmp_dest, quiet = TRUE, mode = 'w'))
   if(class(download_try)=='try-error') {

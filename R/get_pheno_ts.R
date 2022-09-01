@@ -14,13 +14,15 @@
 #' head(ts)
 #'
 get_pheno_ts <- function(site, vegType, roiID, type = '3day'){
+  
+  phenocam_server = 'http://phenocam.nau.edu'
 
   if(type%in%c('1day', '3day', 'roistats')){
     ext <- paste0('_', type, '.csv')
   }else{
     stop("type argument should be one of '1day', '3day', or 'roistats'.")
   }
-  url <- paste0(.Options$phenocam_server, '/data/archive/', site, '/ROI/', site, '_', vegType, '_', sprintf(fmt = '%04d', roiID), ext)
+  url <- paste0(phenocam_server, '/data/archive/', site, '/ROI/', site, '_', vegType, '_', sprintf(fmt = '%04d', roiID), ext)
 
   tmp <- tempfile(fileext='.csv')
   if(class(try(download.file(url, destfile = tmp, mode = 'w')))=='try-error') {
